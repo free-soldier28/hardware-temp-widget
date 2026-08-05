@@ -1,6 +1,9 @@
+using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using HardwareTempWidget.Core;
+using HardwareTempWidget.Sensors.Windows;
 
 namespace HardwareTempWidget.App;
 
@@ -15,6 +18,7 @@ public partial class SettingsWindow : Window
         _mainWindow = mainWindow;
 
         ApplyLocalization();
+        RefreshPerCoreSection();
 
         var settings = mainWindow.Settings;
         LanguageComboBox.SelectedIndex = settings.Language == AppLanguage.Russian ? 1 : 0;
@@ -92,4 +96,66 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void RefreshPerCoreSection()
+    {
+        if (CpuCoreReadings.Extract(_mainWindow.LastReadings).Count > 0)
+        {
+            PerCorePanel.IsVisible = false;
+            return;
+        }
+
+        PerCorePanel.IsVisible = true;
+
+        if (PawnIoInstaller.IsInstalled())
+        {
+            PerCoreStatusText.Text = Localization.T("Settings.PerCoreDriverInstalledButUnavailable");
+            InstallDriverButton.IsVisible = false;
+        }
+        else
+        {
+            PerCoreStatusText.Text = Localization.T("Settings.PerCoreUnavailable");
+            InstallDriverButton.IsVisible = true;
+            InstallDriverButton.IsEnabled = true;
+            InstallDriverButton.Content = Localization.T("Settings.InstallDriver");
+        }
+    }
+
+    private async void OnInstallDriverClick(object? sender, RoutedEventArgs e)
+    {
+        InstallDriverButton.IsEnabled = false;
+        InstallDriverButton.Content = Localization.T("Settings.InstallingDriver");
+
+        var success = await PawnIoInstaller.InstallAsync();
+
+        if (!success)
+        {
+            PerCoreStatusText.Text = Localization.T("Settings.InstallFailed");
+            InstallDriverButton.IsEnabled = true;
+            InstallDriverButton.Content = Localization.T("Settings.InstallDriver");
+            return;
+        }
+
+        PerCoreStatusText.Text = Localization.T("Settings.InstallSuccessRestarting");
+        InstallDriverButton.IsVisible = false;
+        await Task.Delay(1000);
+        RestartApp();
+    }
+
+    private static void RestartApp()
+    {
+        if (Environment.ProcessPath is { } exePath)
+        {
+            Process.Start(exePath);
+        }
+
+        if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+        {
+            lifetime.Shutdown();
+        }
+        else
+        {
+            Environment.Exit(0);
+        }
+    }
 }

@@ -56,6 +56,12 @@
             <NumericUpDown x:Name="OverheatThresholdUpDown" Minimum="40" Maximum="110" Increment="1" FormatString="0" />
         </StackPanel>
 
+        <StackPanel x:Name="PerCorePanel" Spacing="4" IsVisible="False">
+            <Separator />
+            <TextBlock x:Name="PerCoreStatusText" TextWrapping="Wrap" Foreground="OrangeRed" />
+            <Button x:Name="InstallDriverButton" Click="OnInstallDriverClick" HorizontalAlignment="Left" />
+        </StackPanel>
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
             <Button x:Name="CancelButton" Click="OnCancelClick" />
             <Button x:Name="SaveButton" Click="OnSaveClick" />

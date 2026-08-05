@@ -29,6 +29,19 @@ public static class Localization
         ["Notify.OverheatMessage"] = (
             "{0} temperature reached {1:F0}°C (threshold {2}°C).",
             "Температура {0} достигла {1:F0}°C (порог {2}°C)."),
+        ["Tooltip.NoPerCoreData"] = ("Per-core data unavailable", "Данные по ядрам недоступны"),
+        ["Settings.PerCoreUnavailable"] = (
+            "Per-core CPU temperatures aren't available. Install a driver to enable them.",
+            "Температура по отдельным ядрам CPU недоступна. Установите драйвер, чтобы это исправить."),
+        ["Settings.PerCoreDriverInstalledButUnavailable"] = (
+            "Driver is installed, but per-core data still isn't available. Try restarting the app.",
+            "Драйвер установлен, но данные по ядрам всё ещё недоступны. Попробуйте перезапустить приложение."),
+        ["Settings.InstallDriver"] = ("Install driver", "Установить драйвер"),
+        ["Settings.InstallingDriver"] = ("Installing…", "Установка…"),
+        ["Settings.InstallSuccessRestarting"] = ("Installed. Restarting…", "Установлено. Перезапуск…"),
+        ["Settings.InstallFailed"] = (
+            "Installation failed. Try running as administrator, or install PawnIO manually from pawnio.eu.",
+            "Не удалось установить. Попробуйте запустить от имени администратора или установите PawnIO вручную с pawnio.eu."),
     };
 
     public static AppLanguage Current { get; private set; } = AppLanguage.English;

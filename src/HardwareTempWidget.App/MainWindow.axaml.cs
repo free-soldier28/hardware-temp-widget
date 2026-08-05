@@ -46,6 +46,8 @@ public partial class MainWindow : Window
 
     public event Action<float?, float?>? TemperaturesChanged;
 
+    public IReadOnlyList<SensorReading> LastReadings { get; private set; } = Array.Empty<SensorReading>();
+
     public AppSettings Settings => _settings;
 
     public SensorPollingService PollingService => _pollingService;
@@ -117,11 +119,15 @@ public partial class MainWindow : Window
 
     private void OnReadingsUpdated(object? sender, IReadOnlyList<SensorReading> readings)
     {
+        LastReadings = readings;
+
         var cpu = PrimaryTemperatureSelector.Select(readings, SensorType.Cpu);
         var gpu = PrimaryTemperatureSelector.Select(readings, SensorType.Gpu);
 
         CheckOverheat(SensorType.Cpu, cpu, ref _cpuOverheating);
         CheckOverheat(SensorType.Gpu, gpu, ref _gpuOverheating);
+
+        var cpuCoreTooltip = BuildCpuCoreTooltip(readings);
 
         Dispatcher.UIThread.Post(() =>
         {
@@ -129,10 +135,24 @@ public partial class MainWindow : Window
             CpuValueText.Foreground = ColorFor(cpu);
             GpuValueText.Text = FormatTemperature(gpu);
             GpuValueText.Foreground = ColorFor(gpu);
+            ToolTip.SetTip(CpuPanel, cpuCoreTooltip);
 
             ForceTopmost();
             TemperaturesChanged?.Invoke(cpu, gpu);
         });
+    }
+
+    private static string BuildCpuCoreTooltip(IReadOnlyList<SensorReading> readings)
+    {
+        var cores = CpuCoreReadings.Extract(readings);
+
+        if (cores.Count == 0)
+        {
+            return Localization.T("Tooltip.NoPerCoreData");
+        }
+
+        return string.Join(Environment.NewLine,
+            cores.Select(c => $"{c.Name}: {c.TemperatureCelsius:F0}°C"));
     }
 
     private void CheckOverheat(SensorType type, float? celsius, ref bool isOverheating)

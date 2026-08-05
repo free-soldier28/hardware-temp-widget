@@ -8,6 +8,7 @@ namespace HardwareTempWidget.Sensors.Windows;
 public sealed class WindowsSensorProvider : ISensorProvider
 {
     private readonly Computer _computer;
+    private readonly AsusWmiSensorReader _asusWmiReader = new();
 
     public WindowsSensorProvider()
     {
@@ -45,6 +46,15 @@ public sealed class WindowsSensorProvider : ISensorProvider
                 {
                     readings.Add(new SensorReading(sensor.Name, sensorType.Value, sensor.Value.Value));
                 }
+            }
+        }
+
+        if (!readings.Any(r => r.Type == CoreSensorType.Cpu))
+        {
+            var asusCpuTemp = _asusWmiReader.TryGetCpuTemperature();
+            if (asusCpuTemp is { } value)
+            {
+                readings.Add(new SensorReading("CPU", CoreSensorType.Cpu, value));
             }
         }
 

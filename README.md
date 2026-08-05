@@ -9,7 +9,9 @@ Docks to the taskbar right next to the system tray.
 - Live CPU and GPU temperature readings, refreshed at a configurable interval (1.5s by default).
 - Color-coded values: green (≤60°C), orange (61–80°C), red (>80°C).
 - Flexible display: CPU and GPU readings can be shown/hidden independently on the panel.
+- Hovering the CPU value shows a tooltip with the per-core breakdown (P-core/E-core on hybrid Intel CPUs), when available.
 - Data source: [LibreHardwareMonitorLib](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor); GPU support (Nvidia/AMD/Intel) depends on whether the specific hardware/driver exposes a temperature sensor.
+- Per-core CPU temperature requires [PawnIO](https://pawnio.eu) — a signed, HVCI-compatible kernel driver LibreHardwareMonitorLib uses (since 0.9.5) instead of the unsigned WinRing0 driver, which Windows Memory Integrity (Core Isolation) blocks. If PawnIO isn't installed, Settings offers a one-click installer. On supported ASUS laptops, an aggregate (non-per-core) CPU temperature is still shown via ASUS's own WMI sensor interface even without PawnIO.
 
 ### Tray icon
 - Renders the selected temperature (CPU or GPU — configurable) directly on the icon, no need to open the window.
@@ -55,6 +57,8 @@ HardwareTempWidget/
 │   │   ├── AppSettings.cs / SettingsStore.cs
 │   ├── HardwareTempWidget.Sensors.Windows/ # Windows implementation
 │   │   ├── WindowsSensorProvider.cs        # LibreHardwareMonitorLib
+│   │   ├── AsusWmiSensorReader.cs          # ASUS WMI fallback for aggregate CPU temp (no driver needed)
+│   │   ├── PawnIoInstaller.cs              # detects/installs the PawnIO driver for per-core temps
 │   │   ├── WindowsAutostartService.cs      # Run registry key
 │   │   └── WindowsToastNotifier.cs         # toast notifications (Microsoft.Toolkit.Uwp.Notifications)
 │   └── HardwareTempWidget.App/             # Avalonia UI (Windows)
@@ -100,3 +104,9 @@ Grab the newest build from the repo's [Releases](../../releases/tag/latest) page
   sensor at the driver level.
 - Full access to some sensors (especially on certain motherboards) may require running as
   administrator.
+- With Windows Memory Integrity (Core Isolation/HVCI) enabled, LibreHardwareMonitorLib cannot
+  read CPU temperature at all unless [PawnIO](https://pawnio.eu) is installed (Settings offers
+  to install it automatically) — Memory Integrity blocks the unsigned WinRing0 driver it used
+  to rely on. Per-core breakdown specifically always requires PawnIO; there is no fallback for it.
+- The ASUS WMI fallback (aggregate CPU temperature without PawnIO) only works on ASUS hardware
+  that exposes an `AsusHWMonitorWMI` WMI provider; other vendors have no equivalent fallback.
