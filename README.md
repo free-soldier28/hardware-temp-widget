@@ -1,92 +1,102 @@
 # HardwareTempWidget
 
-Лёгкий Windows-виджет, который показывает температуру CPU и GPU в реальном времени.
-Пристыковывается к панели задач рядом с системным треем.
+A lightweight Windows widget that shows live CPU and GPU temperature.
+Docks to the taskbar right next to the system tray.
 
-## Возможности
+## Features
 
-### Отображение температур
-- Живые показания температуры CPU и GPU с обновлением на настраиваемом интервале (по умолчанию 1.5 сек).
-- Цветовая индикация: зелёный (≤60°C), оранжевый (61–80°C), красный (>80°C).
-- Гибкая настройка: можно независимо включать/выключать показ CPU и GPU на панели виджета.
-- Источник данных — [LibreHardwareMonitorLib](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor); поддержка GPU (Nvidia/AMD/Intel) зависит от того, отдаёт ли конкретное железо/драйвер температурный сенсор.
+### Temperature display
+- Live CPU and GPU temperature readings, refreshed at a configurable interval (1.5s by default).
+- Color-coded values: green (≤60°C), orange (61–80°C), red (>80°C).
+- Flexible display: CPU and GPU readings can be shown/hidden independently on the panel.
+- Data source: [LibreHardwareMonitorLib](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor); GPU support (Nvidia/AMD/Intel) depends on whether the specific hardware/driver exposes a temperature sensor.
 
-### Иконка в трее
-- Показывает выбранную температуру (CPU или GPU — настраивается) прямо на значке, без необходимости открывать окно.
-- Всплывающая подсказка (tooltip) со значениями CPU и GPU одновременно.
-- Клик по значку или пункт меню "Показать/скрыть" сворачивает/разворачивает виджет.
+### Tray icon
+- Renders the selected temperature (CPU or GPU — configurable) directly on the icon, no need to open the window.
+- Tooltip shows both CPU and GPU values at once.
+- Clicking the icon or the "Show/hide" menu item toggles the widget.
 
-### Расположение и вид
-- Окно без рамки, высотой ровно с панель задач Windows, по умолчанию располагается слева от области системного трея.
-- Можно перетащить в любое место — позиция запоминается между запусками.
-- Полупрозрачный фон, всегда поверх других окон.
+### Placement and look
+- Borderless window, height matches the Windows taskbar exactly, docks to the left of the system tray icons by default.
+- Can be dragged anywhere — position is remembered between launches.
+- Semi-transparent background, always on top.
 
-### Уведомления о перегреве
-- Настраиваемый порог температуры (°C) для CPU и GPU.
-- При превышении порога отправляется системное уведомление Windows (шторка/Центр уведомлений).
-- Уведомление срабатывает один раз при превышении порога (не спамит на каждом опросе) и повторно возможно только после остывания ниже порога на 3°C и нового превышения.
+### Overheat notifications
+- Configurable temperature threshold (°C) for CPU and GPU.
+- A Windows system notification (Action Center) is sent when the threshold is crossed.
+- Edge-triggered: fires once when the threshold is crossed (not on every poll), and can fire again only after cooling 3°C below the threshold and crossing it again.
 
-### Настройки (правый клик → «Настройки…»)
-- Прозрачность окна.
-- Интервал опроса сенсоров (мс).
-- Автозапуск вместе с Windows (через реестр `HKCU\...\Run`).
-- Какие температуры показывать на панели виджета (CPU / GPU).
-- Какую температуру выводить на значок в трее (CPU или GPU).
-- Включение/выключение уведомлений о перегреве и порог срабатывания.
+### Settings (right-click → "Settings…")
+- Window opacity.
+- Sensor poll interval (ms).
+- Launch with Windows (via the `HKCU\...\Run` registry key).
+- Which temperatures to show on the widget panel (CPU / GPU).
+- Which temperature drives the tray icon (CPU or GPU).
+- Enable/disable overheat notifications and their threshold.
 
-### Контекстное меню (правый клик по виджету)
-- Настройки…
-- Автозапуск (переключатель с индикацией текущего состояния)
-- Выход
+### Context menu (right-click the widget)
+- Settings…
+- Autostart (toggle with current-state indicator)
+- Exit
 
-## Архитектура
+## Architecture
 
-Решение спроектировано с заделом на будущую поддержку других ОС:
+The solution is designed with room for future non-Windows support:
 
 ```
 HardwareTempWidget/
 ├── src/
-│   ├── HardwareTempWidget.Core/            # платформонезависимые абстракции и модели
-│   │   ├── ISensorProvider.cs              # интерфейс чтения сенсоров
-│   │   ├── IAutostartService.cs            # интерфейс управления автозапуском
-│   │   ├── IOverheatNotifier.cs            # интерфейс отправки уведомлений
+│   ├── HardwareTempWidget.Core/            # platform-independent abstractions and models
+│   │   ├── ISensorProvider.cs              # sensor reading interface
+│   │   ├── IAutostartService.cs            # autostart management interface
+│   │   ├── IOverheatNotifier.cs            # notification interface
 │   │   ├── SensorReading.cs / SensorType.cs
-│   │   ├── SensorPollingService.cs         # фоновый поллинг сенсоров
+│   │   ├── SensorPollingService.cs         # background sensor polling
 │   │   ├── AppSettings.cs / SettingsStore.cs
-│   ├── HardwareTempWidget.Sensors.Windows/ # реализация под Windows
+│   ├── HardwareTempWidget.Sensors.Windows/ # Windows implementation
 │   │   ├── WindowsSensorProvider.cs        # LibreHardwareMonitorLib
-│   │   ├── WindowsAutostartService.cs      # реестр Run
-│   │   └── WindowsToastNotifier.cs         # toast-уведомления (Microsoft.Toolkit.Uwp.Notifications)
+│   │   ├── WindowsAutostartService.cs      # Run registry key
+│   │   └── WindowsToastNotifier.cs         # toast notifications (Microsoft.Toolkit.Uwp.Notifications)
 │   └── HardwareTempWidget.App/             # Avalonia UI (Windows)
-│       ├── MainWindow.axaml(.cs)           # виджет на панели задач
+│       ├── MainWindow.axaml(.cs)           # taskbar-docked widget
 │       ├── SettingsWindow.axaml(.cs)
-│       ├── TaskbarInfo.cs                  # позиционирование относительно панели задач/трея
-│       ├── TrayIconRenderer.cs             # рендер температуры на значок трея
-│       └── App.axaml(.cs)                  # точка входа, трей-меню
+│       ├── TaskbarInfo.cs                  # positioning relative to the taskbar/tray
+│       ├── TrayIconRenderer.cs             # renders the temperature onto the tray icon
+│       └── App.axaml(.cs)                  # entry point, tray menu
 └── tests/
     └── HardwareTempWidget.Core.Tests/
 ```
 
-Чтение сенсоров, автозапуск и уведомления скрыты за интерфейсами в `Core`, поэтому для
-поддержки Linux/macOS в будущем достаточно добавить новые реализации (`LinuxSensorProvider`
-и т.д.), не трогая UI.
+Sensor reading, autostart, and notifications are hidden behind interfaces in `Core`, so
+adding Linux/macOS support later only requires new implementations (e.g. `LinuxSensorProvider`)
+without touching the UI.
 
-## Требования
+## Requirements
 
 - Windows 10 (1809+) / Windows 11
-- .NET 8 SDK для сборки
+- .NET 8 SDK to build
 
-## Сборка и запуск
+## Build and run
 
 ```powershell
 dotnet build
 dotnet run --project src/HardwareTempWidget.App/HardwareTempWidget.App.csproj
 ```
 
-## Известные ограничения
+## CI/CD
 
-- Температура GPU доступна только если её отдаёт LibreHardwareMonitorLib для конкретной
-  видеокарты/драйвера — на некоторых встроенных GPU (например, часть Intel iGPU) сенсор
-  температуры не экспонируется на уровне драйвера.
-- Полный доступ к части сенсоров (особенно на некоторых материнских платах) может
-  потребовать запуска от имени администратора.
+GitHub Actions (`.github/workflows/ci.yml`):
+- Every push/PR: restore, build (Release), run `HardwareTempWidget.Core.Tests`.
+- Every push to `main`: additionally publishes a self-contained win-x64 single-file build,
+  uploads it as a workflow artifact, and updates the rolling `latest` GitHub Release with the
+  zipped build.
+
+Grab the newest build from the repo's [Releases](../../releases/tag/latest) page.
+
+## Known limitations
+
+- GPU temperature is only available if LibreHardwareMonitorLib exposes it for the specific
+  GPU/driver — some integrated GPUs (e.g. certain Intel iGPUs) don't expose a temperature
+  sensor at the driver level.
+- Full access to some sensors (especially on certain motherboards) may require running as
+  administrator.
