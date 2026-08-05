@@ -20,11 +20,26 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _mainWindow = new MainWindow();
+            _mainWindow.TemperaturesChanged += OnTemperaturesChanged;
             desktop.MainWindow = _mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    private void OnTemperaturesChanged(float? cpu, float? gpu)
+    {
+        if (_mainWindow is not { } mainWindow || TrayIcon.GetIcons(this) is not { Count: > 0 } icons)
+        {
+            return;
+        }
+
+        var metricValue = mainWindow.Settings.TrayIconMetric == HardwareTempWidget.Core.SensorType.Cpu ? cpu : gpu;
+        icons[0].Icon = TrayIconRenderer.Render(metricValue);
+        icons[0].ToolTipText = $"CPU: {Format(cpu)}   GPU: {Format(gpu)}";
+    }
+
+    private static string Format(float? celsius) => celsius is { } value ? $"{value:F0}°C" : "N/A";
 
     private void OnTrayIconClicked(object? sender, EventArgs e) => _mainWindow?.ToggleVisibility();
 

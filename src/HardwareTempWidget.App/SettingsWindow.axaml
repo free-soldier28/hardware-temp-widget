@@ -4,7 +4,7 @@
         mc:Ignorable="d"
         x:Class="HardwareTempWidget.App.SettingsWindow"
         Title="Настройки — HardwareTempWidget"
-        Width="320" Height="230"
+        Width="340" Height="480"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         Icon="/Assets/app.ico">
@@ -21,6 +21,26 @@
         </StackPanel>
 
         <CheckBox x:Name="AutostartCheckBox" Content="Запускать вместе с Windows" />
+
+        <Separator />
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Отображать на панели" FontWeight="Bold" />
+            <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
+            <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Температура на значке в трее" FontWeight="Bold" />
+            <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
+            <RadioButton x:Name="TrayGpuRadioButton" GroupName="TrayMetric" Content="GPU" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <CheckBox x:Name="OverheatEnabledCheckBox" Content="Уведомлять о перегреве" FontWeight="Bold" />
+            <TextBlock Text="Порог перегрева (°C)" />
+            <NumericUpDown x:Name="OverheatThresholdUpDown" Minimum="40" Maximum="110" Increment="1" FormatString="0" />
+        </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
             <Button Content="Отмена" Click="OnCancelClick" />

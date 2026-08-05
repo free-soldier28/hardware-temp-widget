@@ -9,4 +9,14 @@ public sealed class AppSettings
     public double? WindowLeft { get; set; }
 
     public double? WindowTop { get; set; }
+
+    public bool ShowCpuOnPanel { get; set; } = true;
+
+    public bool ShowGpuOnPanel { get; set; } = true;
+
+    public SensorType TrayIconMetric { get; set; } = SensorType.Cpu;
+
+    public bool OverheatNotificationsEnabled { get; set; } = true;
+
+    public int OverheatThresholdCelsius { get; set; } = 85;
 }
