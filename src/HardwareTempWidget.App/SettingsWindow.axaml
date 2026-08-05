@@ -3,7 +3,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Class="HardwareTempWidget.App.SettingsWindow"
-        Title="Настройки — HardwareTempWidget"
         Width="340"
         SizeToContent="Height"
         CanResize="False"
@@ -12,45 +11,54 @@
 
     <StackPanel Margin="16" Spacing="14">
         <StackPanel Spacing="4">
-            <TextBlock Text="Прозрачность" />
-            <Slider x:Name="OpacitySlider" Minimum="0.3" Maximum="1.0" />
+            <TextBlock x:Name="LanguageLabel" />
+            <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="English" />
+                <ComboBoxItem Content="Русский" />
+            </ComboBox>
         </StackPanel>
-
-        <StackPanel Spacing="4">
-            <TextBlock Text="Интервал опроса (мс)" />
-            <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
-        </StackPanel>
-
-        <CheckBox x:Name="AutostartCheckBox" Content="Запускать вместе с Windows" />
 
         <Separator />
 
         <StackPanel Spacing="4">
-            <TextBlock Text="Отображать на панели" FontWeight="Bold" />
+            <TextBlock x:Name="OpacityLabel" />
+            <Slider x:Name="OpacitySlider" Minimum="0.3" Maximum="1.0" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="PollIntervalLabel" />
+            <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
+        </StackPanel>
+
+        <CheckBox x:Name="AutostartCheckBox" />
+
+        <Separator />
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="DisplayOnPanelLabel" FontWeight="Bold" />
             <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
             <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
             <TextBlock x:Name="PanelValidationText"
-                       Text="Выберите хотя бы одну температуру для отображения на панели."
                        Foreground="OrangeRed"
                        TextWrapping="Wrap"
                        IsVisible="False" />
         </StackPanel>
 
         <StackPanel Spacing="4">
-            <TextBlock Text="Температура на значке в трее" FontWeight="Bold" />
+            <TextBlock x:Name="TrayMetricLabel" FontWeight="Bold" />
             <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
             <RadioButton x:Name="TrayGpuRadioButton" GroupName="TrayMetric" Content="GPU" />
         </StackPanel>
 
         <StackPanel Spacing="4">
-            <CheckBox x:Name="OverheatEnabledCheckBox" Content="Уведомлять о перегреве" FontWeight="Bold" />
-            <TextBlock Text="Порог перегрева (°C)" />
+            <CheckBox x:Name="OverheatEnabledCheckBox" FontWeight="Bold" />
+            <TextBlock x:Name="OverheatThresholdLabel" />
             <NumericUpDown x:Name="OverheatThresholdUpDown" Minimum="40" Maximum="110" Increment="1" FormatString="0" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-            <Button Content="Отмена" Click="OnCancelClick" />
-            <Button Content="Сохранить" Click="OnSaveClick" />
+            <Button x:Name="CancelButton" Click="OnCancelClick" />
+            <Button x:Name="SaveButton" Click="OnSaveClick" />
         </StackPanel>
     </StackPanel>
 </Window>

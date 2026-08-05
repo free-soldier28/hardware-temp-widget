@@ -37,6 +37,9 @@ public partial class MainWindow : Window
         _pollingService = new SensorPollingService(_sensorProvider, TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
         _pollingService.ReadingsUpdated += OnReadingsUpdated;
 
+        ApplyLocalization();
+        Localization.LanguageChanged += ApplyLocalization;
+
         Opened += OnOpened;
         Closing += OnClosing;
     }
@@ -50,7 +53,16 @@ public partial class MainWindow : Window
     public IAutostartService AutostartService => _autostartService;
 
     public void RefreshAutostartMenuHeader() =>
-        AutostartMenuItem.Header = _autostartService.IsEnabled ? "Автозапуск: включён" : "Автозапуск: выключен";
+        AutostartMenuItem.Header = _autostartService.IsEnabled
+            ? Localization.T("Menu.AutostartOn")
+            : Localization.T("Menu.AutostartOff");
+
+    private void ApplyLocalization()
+    {
+        SettingsMenuItem.Header = Localization.T("Menu.Settings");
+        ExitMenuItem.Header = Localization.T("Menu.Exit");
+        RefreshAutostartMenuHeader();
+    }
 
     public void ApplyPanelVisibility()
     {
@@ -137,8 +149,8 @@ public partial class MainWindow : Window
             isOverheating = true;
             var label = type == SensorType.Cpu ? "CPU" : "GPU";
             _overheatNotifier.Notify(
-                "Перегрев " + label,
-                $"Температура {label} достигла {value:F0}°C (порог {threshold}°C).");
+                string.Format(Localization.T("Notify.OverheatTitle"), label),
+                string.Format(Localization.T("Notify.OverheatMessage"), label, value, threshold));
         }
         else if (value < threshold - 3)
         {

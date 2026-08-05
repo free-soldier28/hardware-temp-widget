@@ -29,10 +29,10 @@
 
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Настройки…" Click="OnSettingsClick" />
-            <MenuItem x:Name="AutostartMenuItem" Header="Автозапуск" Click="OnToggleAutostartClick" />
+            <MenuItem x:Name="SettingsMenuItem" Click="OnSettingsClick" />
+            <MenuItem x:Name="AutostartMenuItem" Click="OnToggleAutostartClick" />
             <Separator />
-            <MenuItem Header="Выход" Click="OnExitClick" />
+            <MenuItem x:Name="ExitMenuItem" Click="OnExitClick" />
         </ContextMenu>
     </Window.ContextMenu>
 

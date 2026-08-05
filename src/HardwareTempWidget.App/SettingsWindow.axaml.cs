@@ -14,7 +14,11 @@ public partial class SettingsWindow : Window
 
         _mainWindow = mainWindow;
 
+        ApplyLocalization();
+
         var settings = mainWindow.Settings;
+        LanguageComboBox.SelectedIndex = settings.Language == AppLanguage.Russian ? 1 : 0;
+
         OpacitySlider.Value = settings.Opacity;
         IntervalUpDown.Value = settings.PollIntervalMs;
         AutostartCheckBox.IsChecked = mainWindow.AutostartService.IsEnabled;
@@ -29,6 +33,22 @@ public partial class SettingsWindow : Window
         OverheatThresholdUpDown.Value = settings.OverheatThresholdCelsius;
     }
 
+    private void ApplyLocalization()
+    {
+        Title = Localization.T("Settings.Title");
+        LanguageLabel.Text = Localization.T("Settings.Language");
+        OpacityLabel.Text = Localization.T("Settings.Opacity");
+        PollIntervalLabel.Text = Localization.T("Settings.PollInterval");
+        AutostartCheckBox.Content = Localization.T("Settings.Autostart");
+        DisplayOnPanelLabel.Text = Localization.T("Settings.DisplayOnPanel");
+        PanelValidationText.Text = Localization.T("Settings.PanelValidation");
+        TrayMetricLabel.Text = Localization.T("Settings.TrayMetric");
+        OverheatEnabledCheckBox.Content = Localization.T("Settings.OverheatEnable");
+        OverheatThresholdLabel.Text = Localization.T("Settings.OverheatThreshold");
+        CancelButton.Content = Localization.T("Common.Cancel");
+        SaveButton.Content = Localization.T("Common.Save");
+    }
+
     private void OnSaveClick(object? sender, RoutedEventArgs e)
     {
         if (ShowCpuOnPanelCheckBox.IsChecked != true && ShowGpuOnPanelCheckBox.IsChecked != true)
@@ -40,6 +60,7 @@ public partial class SettingsWindow : Window
         PanelValidationText.IsVisible = false;
 
         var settings = _mainWindow.Settings;
+        settings.Language = LanguageComboBox.SelectedIndex == 1 ? AppLanguage.Russian : AppLanguage.English;
         settings.Opacity = OpacitySlider.Value;
         settings.PollIntervalMs = (int)(IntervalUpDown.Value ?? settings.PollIntervalMs);
 
@@ -65,6 +86,7 @@ public partial class SettingsWindow : Window
         }
 
         SettingsStore.Save(settings);
+        Localization.SetLanguage(settings.Language);
         _mainWindow.RefreshAutostartMenuHeader();
         Close();
     }

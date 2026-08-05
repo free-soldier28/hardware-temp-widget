@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using HardwareTempWidget.Core;
 
 namespace HardwareTempWidget.App;
 
@@ -13,6 +14,22 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        Localization.Initialize(SettingsStore.Load().Language);
+        Localization.LanguageChanged += ApplyLocalization;
+        ApplyLocalization();
+    }
+
+    private void ApplyLocalization()
+    {
+        if (TrayIcon.GetIcons(this) is not { Count: > 0 } icons || icons[0].Menu is not NativeMenu menu)
+        {
+            return;
+        }
+
+        ((NativeMenuItem)menu.Items[0]).Header = Localization.T("Tray.ToggleVisibility");
+        ((NativeMenuItem)menu.Items[1]).Header = Localization.T("Menu.Settings");
+        ((NativeMenuItem)menu.Items[2]).Header = Localization.T("Menu.Exit");
     }
 
     public override void OnFrameworkInitializationCompleted()

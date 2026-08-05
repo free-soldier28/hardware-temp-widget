@@ -1,0 +1,60 @@
+using HardwareTempWidget.Core;
+
+namespace HardwareTempWidget.App;
+
+public static class Localization
+{
+    private static readonly Dictionary<string, (string En, string Ru)> Strings = new()
+    {
+        ["Settings.Title"] = ("Settings — HardwareTempWidget", "Настройки — HardwareTempWidget"),
+        ["Settings.Language"] = ("Language", "Язык"),
+        ["Settings.Opacity"] = ("Opacity", "Прозрачность"),
+        ["Settings.PollInterval"] = ("Poll interval (ms)", "Интервал опроса (мс)"),
+        ["Settings.Autostart"] = ("Start with Windows", "Запускать вместе с Windows"),
+        ["Settings.DisplayOnPanel"] = ("Show on panel", "Отображать на панели"),
+        ["Settings.PanelValidation"] = (
+            "Select at least one temperature to display on the panel.",
+            "Выберите хотя бы одну температуру для отображения на панели."),
+        ["Settings.TrayMetric"] = ("Temperature shown on tray icon", "Температура на значке в трее"),
+        ["Settings.OverheatEnable"] = ("Notify on overheating", "Уведомлять о перегреве"),
+        ["Settings.OverheatThreshold"] = ("Overheat threshold (°C)", "Порог перегрева (°C)"),
+        ["Common.Cancel"] = ("Cancel", "Отмена"),
+        ["Common.Save"] = ("Save", "Сохранить"),
+        ["Menu.Settings"] = ("Settings…", "Настройки…"),
+        ["Menu.AutostartOn"] = ("Autostart: on", "Автозапуск: включён"),
+        ["Menu.AutostartOff"] = ("Autostart: off", "Автозапуск: выключен"),
+        ["Menu.Exit"] = ("Exit", "Выход"),
+        ["Tray.ToggleVisibility"] = ("Show/hide", "Показать/скрыть"),
+        ["Notify.OverheatTitle"] = ("Overheating: {0}", "Перегрев {0}"),
+        ["Notify.OverheatMessage"] = (
+            "{0} temperature reached {1:F0}°C (threshold {2}°C).",
+            "Температура {0} достигла {1:F0}°C (порог {2}°C)."),
+    };
+
+    public static AppLanguage Current { get; private set; } = AppLanguage.English;
+
+    public static event Action? LanguageChanged;
+
+    public static void Initialize(AppLanguage language) => Current = language;
+
+    public static void SetLanguage(AppLanguage language)
+    {
+        if (Current == language)
+        {
+            return;
+        }
+
+        Current = language;
+        LanguageChanged?.Invoke();
+    }
+
+    public static string T(string key)
+    {
+        if (!Strings.TryGetValue(key, out var value))
+        {
+            return key;
+        }
+
+        return Current == AppLanguage.Russian ? value.Ru : value.En;
+    }
+}

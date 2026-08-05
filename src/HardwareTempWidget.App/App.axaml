@@ -12,9 +12,9 @@
             <TrayIcon Icon="/Assets/app.ico" ToolTipText="HardwareTempWidget" Clicked="OnTrayIconClicked">
                 <TrayIcon.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Показать/скрыть" Click="OnTrayToggleClick" />
-                        <NativeMenuItem Header="Настройки…" Click="OnTraySettingsClick" />
-                        <NativeMenuItem Header="Выход" Click="OnTrayExitClick" />
+                        <NativeMenuItem Click="OnTrayToggleClick" />
+                        <NativeMenuItem Click="OnTraySettingsClick" />
+                        <NativeMenuItem Click="OnTrayExitClick" />
                     </NativeMenu>
                 </TrayIcon.Menu>
             </TrayIcon>

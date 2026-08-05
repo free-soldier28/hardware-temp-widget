@@ -2,6 +2,8 @@ namespace HardwareTempWidget.Core;
 
 public sealed class AppSettings
 {
+    public AppLanguage Language { get; set; } = AppLanguage.English;
+
     public double Opacity { get; set; } = 0.85;
 
     public int PollIntervalMs { get; set; } = 1500;
