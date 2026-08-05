@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="HardwareTempWidget.App.MainWindow"
+        Title="HardwareTempWidget"
+        Width="220" Height="110"
+        CanResize="False"
+        WindowDecorations="None"
+        Topmost="True"
+        ShowInTaskbar="False"
+        Background="#CC1E1E28"
+        WindowStartupLocation="Manual"
+        Icon="/Assets/app.ico"
+        PointerPressed="OnPointerPressed">
+
+    <Window.Styles>
+        <Style Selector="TextBlock.value">
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="#AAAAAA" />
+        </Style>
+    </Window.Styles>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Настройки…" Click="OnSettingsClick" />
+            <MenuItem x:Name="AutostartMenuItem" Header="Автозапуск" Click="OnToggleAutostartClick" />
+            <Separator />
+            <MenuItem Header="Выход" Click="OnExitClick" />
+        </ContextMenu>
+    </Window.ContextMenu>
+
+    <Grid Margin="16" ColumnDefinitions="*,*">
+        <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock Classes="label" Text="CPU" />
+            <TextBlock x:Name="CpuValueText" Classes="value" Text="--°C" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="2">
+            <TextBlock Classes="label" Text="GPU" />
+            <TextBlock x:Name="GpuValueText" Classes="value" Text="--°C" />
+        </StackPanel>
+    </Grid>
+</Window>

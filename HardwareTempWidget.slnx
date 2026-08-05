@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HardwareTempWidget.App/HardwareTempWidget.App.csproj" />
+    <Project Path="src/HardwareTempWidget.Core/HardwareTempWidget.Core.csproj" />
+    <Project Path="src/HardwareTempWidget.Sensors.Windows/HardwareTempWidget.Sensors.Windows.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HardwareTempWidget.Core.Tests/HardwareTempWidget.Core.Tests.csproj" />
+  </Folder>
+</Solution>

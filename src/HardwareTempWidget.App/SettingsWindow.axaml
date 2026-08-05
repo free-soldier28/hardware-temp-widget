@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="HardwareTempWidget.App.SettingsWindow"
+        Title="Настройки — HardwareTempWidget"
+        Width="320" Height="230"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Icon="/Assets/app.ico">
+
+    <StackPanel Margin="16" Spacing="14">
+        <StackPanel Spacing="4">
+            <TextBlock Text="Прозрачность" />
+            <Slider x:Name="OpacitySlider" Minimum="0.3" Maximum="1.0" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Интервал опроса (мс)" />
+            <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
+        </StackPanel>
+
+        <CheckBox x:Name="AutostartCheckBox" Content="Запускать вместе с Windows" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Отмена" Click="OnCancelClick" />
+            <Button Content="Сохранить" Click="OnSaveClick" />
+        </StackPanel>
+    </StackPanel>
+</Window>
