@@ -85,7 +85,14 @@ public partial class MainWindow : Window
         }
 
         RefreshAutostartMenuHeader();
+        ForceTopmost();
         _pollingService.Start();
+    }
+
+    private void ForceTopmost()
+    {
+        var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+        TaskbarInfo.ForceTopmost(handle);
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
@@ -111,6 +118,7 @@ public partial class MainWindow : Window
             GpuValueText.Text = FormatTemperature(gpu);
             GpuValueText.Foreground = ColorFor(gpu);
 
+            ForceTopmost();
             TemperaturesChanged?.Invoke(cpu, gpu);
         });
     }
@@ -156,7 +164,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void OnSettingsClick(object? sender, RoutedEventArgs e)
+    private void OnSettingsClick(object? sender, RoutedEventArgs e) => ShowSettings();
+
+    public void ShowSettings()
     {
         var settingsWindow = new SettingsWindow(this);
         settingsWindow.Show(this);

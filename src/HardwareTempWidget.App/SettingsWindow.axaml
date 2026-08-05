@@ -4,7 +4,8 @@
         mc:Ignorable="d"
         x:Class="HardwareTempWidget.App.SettingsWindow"
         Title="Настройки — HardwareTempWidget"
-        Width="340" Height="480"
+        Width="340"
+        SizeToContent="Height"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         Icon="/Assets/app.ico">
@@ -28,6 +29,11 @@
             <TextBlock Text="Отображать на панели" FontWeight="Bold" />
             <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
             <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
+            <TextBlock x:Name="PanelValidationText"
+                       Text="Выберите хотя бы одну температуру для отображения на панели."
+                       Foreground="OrangeRed"
+                       TextWrapping="Wrap"
+                       IsVisible="False" />
         </StackPanel>
 
         <StackPanel Spacing="4">

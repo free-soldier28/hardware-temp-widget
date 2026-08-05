@@ -31,16 +31,20 @@ public partial class SettingsWindow : Window
 
     private void OnSaveClick(object? sender, RoutedEventArgs e)
     {
+        if (ShowCpuOnPanelCheckBox.IsChecked != true && ShowGpuOnPanelCheckBox.IsChecked != true)
+        {
+            PanelValidationText.IsVisible = true;
+            return;
+        }
+
+        PanelValidationText.IsVisible = false;
+
         var settings = _mainWindow.Settings;
         settings.Opacity = OpacitySlider.Value;
         settings.PollIntervalMs = (int)(IntervalUpDown.Value ?? settings.PollIntervalMs);
 
         settings.ShowCpuOnPanel = ShowCpuOnPanelCheckBox.IsChecked == true;
         settings.ShowGpuOnPanel = ShowGpuOnPanelCheckBox.IsChecked == true;
-        if (!settings.ShowCpuOnPanel && !settings.ShowGpuOnPanel)
-        {
-            settings.ShowCpuOnPanel = true;
-        }
 
         settings.TrayIconMetric = TrayGpuRadioButton.IsChecked == true ? SensorType.Gpu : SensorType.Cpu;
 

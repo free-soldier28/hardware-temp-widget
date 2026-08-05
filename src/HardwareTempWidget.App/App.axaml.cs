@@ -45,6 +45,8 @@ public partial class App : Application
 
     private void OnTrayToggleClick(object? sender, EventArgs e) => _mainWindow?.ToggleVisibility();
 
+    private void OnTraySettingsClick(object? sender, EventArgs e) => _mainWindow?.ShowSettings();
+
     private void OnTrayExitClick(object? sender, EventArgs e)
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
