@@ -69,11 +69,27 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path publish/* -DestinationPath HardwareTempWidget-win-x64.zip
 
+      - name: Read version
+        id: version
+        shell: pwsh
+        run: |
+          $v = Select-String -Path src/HardwareTempWidget.App/HardwareTempWidget.App.csproj -Pattern '<Version>(.*)</Version>' | ForEach-Object { $_.Matches[0].Groups[1].Value }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Check tag
+        id: tag
+        shell: pwsh
+        run: |
+          $tag = "v${{ steps.version.outputs.version }}"
+          $exists = git ls-remote --tags origin "refs/tags/$tag"
+          "exists=$([bool]$exists)" >> $env:GITHUB_OUTPUT
+
       - name: Publish GitHub Release
+        if: steps.version.outputs.version != '' && steps.tag.outputs.exists == 'False'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Latest build
+          tag_name: v${{ steps.version.outputs.version }}
+          name: HardwareTempWidget v${{ steps.version.outputs.version }}
           make_latest: true
           body: Automated build from commit ${{ github.sha }}.
           files: HardwareTempWidget-win-x64.zip
