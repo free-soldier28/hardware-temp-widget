@@ -69,8 +69,11 @@ public partial class UpdateWindow : Window
 
         await _updater.DownloadAndInstallAsync(_update, value =>
         {
-            ProgressBar.Value = value * 100;
-            StatusText.Text = $"{Localization.T("Update.Downloading")} {value * 100:F0}%";
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                ProgressBar.Value = value * 100;
+                StatusText.Text = $"{Localization.T("Update.Downloading")} {value * 100:F0}%";
+            });
         });
 
         StatusText.Text = Localization.T("Update.Installed");
