@@ -34,8 +34,8 @@ public static class Localization
             "Per-core CPU temperatures aren't available. Install a driver to enable them.",
             "Температура по отдельным ядрам CPU недоступна. Установите драйвер, чтобы это исправить."),
         ["Settings.PerCoreDriverInstalledButUnavailable"] = (
-            "Driver is installed, but per-core data still isn't available. Try restarting the app.",
-            "Драйвер установлен, но данные по ядрам всё ещё недоступны. Попробуйте перезапустить приложение."),
+            "Driver is installed, but per-core data still isn't available. The app must be run as Administrator.",
+            "Драйвер установлен, но данные по ядрам всё ещё недоступны. Приложение должно запускаться только от имени Администратора."),
         ["Settings.InstallDriver"] = ("Install driver", "Установить драйвер"),
         ["Settings.InstallingDriver"] = ("Installing…", "Установка…"),
         ["Settings.InstallSuccessRestarting"] = ("Installed. Restarting…", "Установлено. Перезапуск…"),

@@ -79,6 +79,9 @@ without touching the UI.
 
 - Windows 10 (1809+) / Windows 11
 - .NET 8 SDK to build
+- The app must run **as Administrator**: CPU temperatures are read through MSR registers via the
+  PawnIO kernel driver, which requires elevated privileges. The app requests elevation at launch
+  (UAC prompt) and will not show temperatures otherwise.
 
 ## Build and run
 
@@ -97,13 +100,38 @@ GitHub Actions (`.github/workflows/ci.yml`):
 
 Grab the newest build from the repo's [Releases](../../releases/tag/latest) page.
 
+## SmartScreen / Windows Defender warnings
+
+The release binaries are unsigned, so Windows SmartScreen may show "Windows protected your PC" /
+"Unknown publisher" on first launch. This is expected for any unsigned .NET app and is **not**
+a sign of malware — the project has no code-signing certificate.
+
+To run:
+- In the SmartScreen dialog click **More info → Run anyway**.
+- Or right-click the downloaded zip → **Properties → Unblock** (clears the
+  Mark-of-the-Web flag) before extracting.
+
+Why it happens:
+- The file was downloaded from the internet (Mark of the Web).
+- No Authenticode signature, so the publisher shows as "Unknown".
+- New apps have no SmartScreen reputation until many users run them.
+
+Why not sign it?
+- Self-signed certificates are free but **make things worse** — Windows shows an even stronger
+  block for certs it doesn't trust. They're only useful for local testing.
+- Free signing exists for open-source projects via [SignPath Foundation](https://signpath.org)
+  or [OSSign](https://ossign.org), but requires a public repo with release history and is
+  subject to their review. The publisher would show as the signing foundation, not the project.
+- Commercial options: [Azure Trusted Signing](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options)
+  (~$9.99/mo, US/Canada only) or a paid OV certificate (~$70–120/yr).
+- Note that even a valid signature only removes the "Unknown publisher" warning — SmartScreen
+  reputation still builds gradually as users run the app.
+
 ## Known limitations
 
 - GPU temperature is only available if LibreHardwareMonitorLib exposes it for the specific
   GPU/driver — some integrated GPUs (e.g. certain Intel iGPUs) don't expose a temperature
   sensor at the driver level.
-- Full access to some sensors (especially on certain motherboards) may require running as
-  administrator.
 - With Windows Memory Integrity (Core Isolation/HVCI) enabled, LibreHardwareMonitorLib cannot
   read CPU temperature at all unless [PawnIO](https://pawnio.eu) is installed (Settings offers
   to install it automatically) — Memory Integrity blocks the unsigned WinRing0 driver it used
