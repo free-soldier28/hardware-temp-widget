@@ -27,4 +27,8 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="HardwareTempWidget.App.Tests" />
+  </ItemGroup>
 </Project>

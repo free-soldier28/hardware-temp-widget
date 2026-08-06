@@ -4,18 +4,30 @@ namespace HardwareTempWidget.Core;
 
 public static class SettingsStore
 {
-    private static readonly string FilePath = Path.Combine(
+    private static readonly string DefaultDirectory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "HardwareTempWidget",
-        "settings.json");
+        "HardwareTempWidget");
 
-    public static AppSettings Load()
+    /// <summary>
+    /// Resolves the default settings directory. Overridable by the test suite so the
+    /// parameterless API can be exercised without touching the real AppData folder.
+    /// </summary>
+    internal static Func<string> DefaultDirectoryResolver { get; set; } = () => DefaultDirectory;
+
+    public static string FilePath => Path.Combine(DefaultDirectoryResolver(), "settings.json");
+
+    public static AppSettings Load() => Load(DefaultDirectoryResolver());
+
+    public static void Save(AppSettings settings) => Save(DefaultDirectoryResolver(), settings);
+
+    public static AppSettings Load(string directory)
     {
         try
         {
-            if (File.Exists(FilePath))
+            var filePath = Path.Combine(directory, "settings.json");
+            if (File.Exists(filePath))
             {
-                var json = File.ReadAllText(FilePath);
+                var json = File.ReadAllText(filePath);
                 var settings = JsonSerializer.Deserialize<AppSettings>(json);
                 if (settings is not null)
                 {
@@ -31,11 +43,11 @@ public static class SettingsStore
         return new AppSettings();
     }
 
-    public static void Save(AppSettings settings)
+    public static void Save(string directory, AppSettings settings)
     {
-        var directory = Path.GetDirectoryName(FilePath)!;
         Directory.CreateDirectory(directory);
+        var filePath = Path.Combine(directory, "settings.json");
         var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(FilePath, json);
+        File.WriteAllText(filePath, json);
     }
 }

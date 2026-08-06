@@ -3,6 +3,7 @@ bin/
 obj/
 out/
 publish/
+TestResults/
 
 ## Visual Studio / Rider
 .vs/
