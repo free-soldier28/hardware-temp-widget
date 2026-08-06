@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using HardwareTempWidget.Core;
 using HardwareTempWidget.Sensors.Windows;
 
@@ -25,12 +26,25 @@ public partial class SettingsWindow : Window
         LanguageComboBox.SelectedIndex = settings.Language == AppLanguage.Russian ? 1 : 0;
 
         OpacitySlider.Value = settings.Opacity;
+        OpacitySlider.ValueChanged += OnOpacityChanged;
+        UpdateOpacityPreview(settings.Opacity);
+        ColorWheelControl.ColorChanged += OnWheelColorChanged;
+        ResetColorButton.Click += OnResetColorClick;
+        ResetColorButton.IsVisible = settings.PanelBackgroundColor != "#CC1E1E28";
+        BuildPresetSwatches();
+        UpdateBackgroundPreview(Color.TryParse(settings.PanelBackgroundColor, out var initColor)
+            ? initColor
+            : Color.Parse("#CC1E1E28"));
         FontSizeSlider.Value = settings.PanelFontSize;
         FontSizeSlider.ValueChanged += OnFontSizeChanged;
         UpdateFontPreview(settings.PanelFontSize);
         IntervalUpDown.Value = settings.PollIntervalMs;
-        AutostartCheckBox.IsChecked = mainWindow.AutostartService.IsEnabled;        ShowCpuOnPanelCheckBox.IsChecked = settings.ShowCpuOnPanel;
+        AutostartCheckBox.IsChecked = mainWindow.AutostartService.IsEnabled;
+        ShowCpuOnPanelCheckBox.IsChecked = settings.ShowCpuOnPanel;
         ShowGpuOnPanelCheckBox.IsChecked = settings.ShowGpuOnPanel;
+        ShowCpuOnPanelCheckBox.IsCheckedChanged += OnPanelSelectionChanged;
+        ShowGpuOnPanelCheckBox.IsCheckedChanged += OnPanelSelectionChanged;
+        UpdatePanelVisibilityPreview();
 
         CpuModeComboBox.SelectedIndex = (int)settings.CpuDisplayMode;
 
@@ -46,6 +60,8 @@ public partial class SettingsWindow : Window
         Title = Localization.T("Settings.Title");
         LanguageLabel.Text = Localization.T("Settings.Language");
         OpacityLabel.Text = Localization.T("Settings.Opacity");
+        BackgroundColorLabel.Text = Localization.T("Settings.BackgroundColor");
+        PresetColorsLabel.Text = Localization.T("Settings.PresetColors");
         FontSizeLabel.Text = Localization.T("Settings.FontSize");
         PollIntervalLabel.Text = Localization.T("Settings.PollInterval");
         AutostartCheckBox.Content = Localization.T("Settings.Autostart");
@@ -73,6 +89,7 @@ public partial class SettingsWindow : Window
         var settings = _mainWindow.Settings;
         settings.Language = LanguageComboBox.SelectedIndex == 1 ? AppLanguage.Russian : AppLanguage.English;
         settings.Opacity = OpacitySlider.Value;
+        settings.PanelBackgroundColor = _hexColor;
         settings.PanelFontSize = FontSizeSlider.Value;
         settings.PollIntervalMs = (int)(IntervalUpDown.Value ?? settings.PollIntervalMs);
 
@@ -87,6 +104,7 @@ public partial class SettingsWindow : Window
         settings.OverheatThresholdCelsius = (int)(OverheatThresholdUpDown.Value ?? settings.OverheatThresholdCelsius);
 
         _mainWindow.Opacity = settings.Opacity;
+        _mainWindow.ApplyPanelBackground();
         _mainWindow.ApplyPanelFontSize();
         _mainWindow.PollingService.Interval = TimeSpan.FromMilliseconds(settings.PollIntervalMs);
         _mainWindow.ApplyPanelVisibility();
@@ -108,9 +126,74 @@ public partial class SettingsWindow : Window
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
 
+    private void OnWheelColorChanged(object? sender, Color e)
+    {
+        var a = Color.Parse(_hexColor).A;
+        UpdateBackgroundPreview(new Color(a, e.R, e.G, e.B));
+    }
+
+    private void OnResetColorClick(object? sender, RoutedEventArgs e)
+    {
+        UpdateBackgroundPreview(Color.Parse("#CC1E1E28"));
+    }
+
+    private void BuildPresetSwatches()
+    {
+        var presets = new[]
+        {
+            "#FF1E1E28", "#FF0F1115",
+            "#FFFF0000", "#FF00FF00", "#FF0000FF", "#FFFFFF00",
+            "#FFFF00FF", "#FF00FFFF", "#FFFFA500", "#FFFFC0CB",
+            "#FFA52A2A", "#FF008000", "#FF000080", "#FF800000", "#FF808080",
+        };
+
+        foreach (var hex in presets)
+        {
+            var border = new Border
+            {
+                Width = 26,
+                Height = 26,
+                CornerRadius = new Avalonia.CornerRadius(3),
+                Margin = new Avalonia.Thickness(0, 0, 6, 6),
+                Background = new SolidColorBrush(Color.Parse(hex)),
+                Tag = hex,
+            };
+            border.PointerPressed += (_, _) => UpdateBackgroundPreview(Color.Parse((string)border.Tag!));
+            PresetColorsPanel.Children.Add(border);
+        }
+    }
+
+    private void UpdateBackgroundPreview(Color color)
+    {
+        _hexColor = color.ToString();
+        PreviewBorder.Background = new SolidColorBrush(color);
+        ColorSwatch.Background = new SolidColorBrush(color);
+        ColorValueText.Text = _hexColor;
+        ColorWheelControl.Color = new Color(255, color.R, color.G, color.B);
+        ResetColorButton.IsVisible = _hexColor != "#CC1E1E28";
+    }
+
+    private string _hexColor = "#CC1E1E28";
+
+    private void OnOpacityChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        UpdateOpacityPreview(e.NewValue);
+    }
+
+    private void UpdateOpacityPreview(double opacity)
+    {
+        PreviewBorder.Opacity = opacity;
+        OpacityValueText.Text = opacity.ToString("0%");
+    }
+
     private void OnFontSizeChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         UpdateFontPreview(e.NewValue);
+    }
+
+    private void OnPanelSelectionChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        UpdatePanelVisibilityPreview();
     }
 
     private void UpdateFontPreview(double size)
@@ -120,6 +203,12 @@ public partial class SettingsWindow : Window
         PreviewGpuLabel.FontSize = size * 0.8;
         PreviewCpuValue.FontSize = size;
         PreviewGpuValue.FontSize = size;
+    }
+
+    private void UpdatePanelVisibilityPreview()
+    {
+        PreviewCpuPanel.IsVisible = ShowCpuOnPanelCheckBox.IsChecked == true;
+        PreviewGpuPanel.IsVisible = ShowGpuOnPanelCheckBox.IsChecked == true;
     }
 
     private void OnCheckUpdatesClick(object? sender, RoutedEventArgs e)

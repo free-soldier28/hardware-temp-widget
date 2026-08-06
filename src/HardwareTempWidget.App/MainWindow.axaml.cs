@@ -36,6 +36,7 @@ public partial class MainWindow : Window
         _overheatNotifier = OverheatNotifierFactory.Create();
 
         Opacity = _settings.Opacity;
+        ApplyPanelBackground();
         ApplyPanelVisibility();
         ApplyPanelFontSize();
 
@@ -69,6 +70,14 @@ public partial class MainWindow : Window
         SettingsMenuItem.Header = Localization.T("Menu.Settings");
         ExitMenuItem.Header = Localization.T("Menu.Exit");
         RefreshAutostartMenuHeader();
+    }
+
+    public void ApplyPanelBackground()
+    {
+        if (Color.TryParse(_settings.PanelBackgroundColor, out var color))
+        {
+            Background = new SolidColorBrush(color);
+        }
     }
 
     public void ApplyPanelVisibility()

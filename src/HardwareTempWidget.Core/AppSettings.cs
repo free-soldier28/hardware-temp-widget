@@ -4,7 +4,9 @@ public sealed class AppSettings
 {
     public AppLanguage Language { get; set; } = AppLanguage.English;
 
-    public double Opacity { get; set; } = 0.85;
+    public double Opacity { get; set; } = 1.0;
+
+    public string PanelBackgroundColor { get; set; } = "#CC1E1E28";
 
     public int PollIntervalMs { get; set; } = 1500;
 
