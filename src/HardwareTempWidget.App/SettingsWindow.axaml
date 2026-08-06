@@ -45,6 +45,11 @@
         </StackPanel>
 
         <StackPanel Spacing="4">
+            <TextBlock x:Name="CpuModeLabel" FontWeight="Bold" />
+            <ComboBox x:Name="CpuModeComboBox" HorizontalAlignment="Stretch" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
             <TextBlock x:Name="TrayMetricLabel" FontWeight="Bold" />
             <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
             <RadioButton x:Name="TrayGpuRadioButton" GroupName="TrayMetric" Content="GPU" />

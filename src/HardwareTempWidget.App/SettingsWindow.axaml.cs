@@ -18,6 +18,7 @@ public partial class SettingsWindow : Window
         _mainWindow = mainWindow;
 
         ApplyLocalization();
+        PopulateCpuModeComboBox();
         RefreshPerCoreSection();
 
         var settings = mainWindow.Settings;
@@ -29,6 +30,8 @@ public partial class SettingsWindow : Window
 
         ShowCpuOnPanelCheckBox.IsChecked = settings.ShowCpuOnPanel;
         ShowGpuOnPanelCheckBox.IsChecked = settings.ShowGpuOnPanel;
+
+        CpuModeComboBox.SelectedIndex = (int)settings.CpuDisplayMode;
 
         TrayCpuRadioButton.IsChecked = settings.TrayIconMetric == SensorType.Cpu;
         TrayGpuRadioButton.IsChecked = settings.TrayIconMetric == SensorType.Gpu;
@@ -45,6 +48,7 @@ public partial class SettingsWindow : Window
         PollIntervalLabel.Text = Localization.T("Settings.PollInterval");
         AutostartCheckBox.Content = Localization.T("Settings.Autostart");
         DisplayOnPanelLabel.Text = Localization.T("Settings.DisplayOnPanel");
+        CpuModeLabel.Text = Localization.T("Settings.CpuMode");
         PanelValidationText.Text = Localization.T("Settings.PanelValidation");
         TrayMetricLabel.Text = Localization.T("Settings.TrayMetric");
         OverheatEnabledCheckBox.Content = Localization.T("Settings.OverheatEnable");
@@ -73,6 +77,8 @@ public partial class SettingsWindow : Window
 
         settings.TrayIconMetric = TrayGpuRadioButton.IsChecked == true ? SensorType.Gpu : SensorType.Cpu;
 
+        settings.CpuDisplayMode = (CpuDisplayMode)CpuModeComboBox.SelectedIndex;
+
         settings.OverheatNotificationsEnabled = OverheatEnabledCheckBox.IsChecked == true;
         settings.OverheatThresholdCelsius = (int)(OverheatThresholdUpDown.Value ?? settings.OverheatThresholdCelsius);
 
@@ -96,6 +102,14 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void PopulateCpuModeComboBox()
+    {
+        CpuModeComboBox.Items.Clear();
+        CpuModeComboBox.Items.Add(Localization.T("Settings.CpuModeSmoothing"));
+        CpuModeComboBox.Items.Add(Localization.T("Settings.CpuModeCoreAverage"));
+        CpuModeComboBox.Items.Add(Localization.T("Settings.CpuModeDefault"));
+    }
 
     private void RefreshPerCoreSection()
     {

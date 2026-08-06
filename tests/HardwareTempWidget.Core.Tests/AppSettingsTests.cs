@@ -15,6 +15,7 @@ public class AppSettingsTests
         Assert.True(settings.ShowCpuOnPanel);
         Assert.True(settings.ShowGpuOnPanel);
         Assert.Equal(SensorType.Cpu, settings.TrayIconMetric);
+        Assert.Equal(CpuDisplayMode.Smoothing, settings.CpuDisplayMode);
         Assert.True(settings.OverheatNotificationsEnabled);
         Assert.Equal(85, settings.OverheatThresholdCelsius);
     }

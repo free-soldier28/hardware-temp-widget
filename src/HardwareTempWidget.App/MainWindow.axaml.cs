@@ -22,6 +22,8 @@ public partial class MainWindow : Window
     private bool _cpuOverheating;
     private bool _gpuOverheating;
 
+    private readonly MovingAverage _cpuSmoother = new(5);
+
     public MainWindow()
     {
         InitializeComponent();
@@ -121,7 +123,7 @@ public partial class MainWindow : Window
     {
         LastReadings = readings;
 
-        var cpu = PrimaryTemperatureSelector.Select(readings, SensorType.Cpu);
+        var cpu = SelectCpuTemperature(readings);
         var gpu = PrimaryTemperatureSelector.Select(readings, SensorType.Gpu);
 
         CheckOverheat(SensorType.Cpu, cpu, ref _cpuOverheating);
@@ -140,6 +142,19 @@ public partial class MainWindow : Window
             ForceTopmost();
             TemperaturesChanged?.Invoke(cpu, gpu);
         });
+    }
+
+    private float? SelectCpuTemperature(IReadOnlyList<SensorReading> readings)
+    {
+        var raw = PrimaryTemperatureSelector.Select(readings, SensorType.Cpu);
+
+        return _settings.CpuDisplayMode switch
+        {
+            CpuDisplayMode.Smoothing => raw is { } value ? _cpuSmoother.Add(value) : null,
+            CpuDisplayMode.CoreAverage =>
+                PrimaryTemperatureSelector.SelectCoreAverage(readings, SensorType.Cpu) ?? raw,
+            _ => raw,
+        };
     }
 
     private static string BuildCpuCoreTooltip(IReadOnlyList<SensorReading> readings)

@@ -33,6 +33,7 @@ public class SettingsStoreTests : IDisposable
             ShowCpuOnPanel = false,
             ShowGpuOnPanel = true,
             TrayIconMetric = SensorType.Gpu,
+            CpuDisplayMode = CpuDisplayMode.CoreAverage,
             OverheatNotificationsEnabled = false,
             OverheatThresholdCelsius = 90,
         };
@@ -48,6 +49,7 @@ public class SettingsStoreTests : IDisposable
         Assert.Equal(original.ShowCpuOnPanel, loaded.ShowCpuOnPanel);
         Assert.Equal(original.ShowGpuOnPanel, loaded.ShowGpuOnPanel);
         Assert.Equal(original.TrayIconMetric, loaded.TrayIconMetric);
+        Assert.Equal(original.CpuDisplayMode, loaded.CpuDisplayMode);
         Assert.Equal(original.OverheatNotificationsEnabled, loaded.OverheatNotificationsEnabled);
         Assert.Equal(original.OverheatThresholdCelsius, loaded.OverheatThresholdCelsius);
     }

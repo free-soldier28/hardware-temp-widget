@@ -18,6 +18,8 @@ public sealed class AppSettings
 
     public SensorType TrayIconMetric { get; set; } = SensorType.Cpu;
 
+    public CpuDisplayMode CpuDisplayMode { get; set; } = CpuDisplayMode.Smoothing;
+
     public bool OverheatNotificationsEnabled { get; set; } = true;
 
     public int OverheatThresholdCelsius { get; set; } = 85;

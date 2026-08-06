@@ -168,4 +168,42 @@ public class PrimaryTemperatureSelectorTests
     {
         Assert.Null(PrimaryTemperatureSelector.Select([], SensorType.Cpu));
     }
+
+    [Fact]
+    public void SelectCoreAverage_ReturnsCoreAverageSensor()
+    {
+        var readings = new List<SensorReading>
+        {
+            Reading("CPU Core #1", SensorType.Cpu, 50f),
+            Reading("CPU Core Average", SensorType.Cpu, 47f),
+            Reading("CPU Package", SensorType.Cpu, 55f),
+        };
+
+        var result = PrimaryTemperatureSelector.SelectCoreAverage(readings, SensorType.Cpu);
+
+        Assert.Equal(47f, result);
+    }
+
+    [Fact]
+    public void SelectCoreAverage_NoCoreAverage_ReturnsNull()
+    {
+        var readings = new List<SensorReading>
+        {
+            Reading("CPU Package", SensorType.Cpu, 55f),
+            Reading("CPU Core #1", SensorType.Cpu, 50f),
+        };
+
+        Assert.Null(PrimaryTemperatureSelector.SelectCoreAverage(readings, SensorType.Cpu));
+    }
+
+    [Fact]
+    public void SelectCoreAverage_IgnoresOtherTypes()
+    {
+        var readings = new List<SensorReading>
+        {
+            Reading("GPU Core Average", SensorType.Gpu, 60f),
+        };
+
+        Assert.Null(PrimaryTemperatureSelector.SelectCoreAverage(readings, SensorType.Cpu));
+    }
 }

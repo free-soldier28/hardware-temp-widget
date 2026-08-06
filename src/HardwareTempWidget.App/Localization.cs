@@ -12,6 +12,10 @@ public static class Localization
         ["Settings.PollInterval"] = ("Poll interval (ms)", "Интервал опроса (мс)"),
         ["Settings.Autostart"] = ("Start with Windows", "Запускать вместе с Windows"),
         ["Settings.DisplayOnPanel"] = ("Show on panel", "Отображать на панели"),
+        ["Settings.CpuMode"] = ("CPU display mode", "Режим отображения CPU"),
+        ["Settings.CpuModeSmoothing"] = ("Smoothing", "Сглаживание"),
+        ["Settings.CpuModeCoreAverage"] = ("Core average", "Среднее по ядрам"),
+        ["Settings.CpuModeDefault"] = ("Default (package)", "Обычный (package)"),
         ["Settings.PanelValidation"] = (
             "Select at least one temperature to display on the panel.",
             "Выберите хотя бы одну температуру для отображения на панели."),

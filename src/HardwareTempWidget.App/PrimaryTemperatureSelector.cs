@@ -20,4 +20,12 @@ internal static class PrimaryTemperatureSelector
 
         return (preferred ?? candidates[0]).TemperatureCelsius;
     }
+
+    public static float? SelectCoreAverage(IReadOnlyList<SensorReading> readings, SensorType type)
+    {
+        return readings.FirstOrDefault(r =>
+                r.Type == type
+                && r.Name.Contains("Core Average", StringComparison.OrdinalIgnoreCase))
+            ?.TemperatureCelsius;
+    }
 }
