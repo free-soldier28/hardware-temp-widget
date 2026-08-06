@@ -31,4 +31,11 @@
   <ItemGroup>
     <InternalsVisibleTo Include="HardwareTempWidget.App.Tests" />
   </ItemGroup>
+
+  <Target Name="RemovePdbFromPublish" AfterTargets="Publish">
+    <ItemGroup>
+      <_PublishPdbs Include="$(PublishDir)**\*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_PublishPdbs)" />
+  </Target>
 </Project>

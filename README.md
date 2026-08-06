@@ -91,9 +91,9 @@ dotnet run --project src/HardwareTempWidget.App/HardwareTempWidget.App.csproj
 
 GitHub Actions (`.github/workflows/ci.yml`):
 - Every push/PR: restore, build (Release), run `HardwareTempWidget.Core.Tests`.
-- Every push to `main`: additionally publishes a self-contained win-x64 single-file build,
+- Every push to `main`: additionally publishes a framework-dependent single-file build,
   uploads it as a workflow artifact, and updates the rolling `latest` GitHub Release with the
-  zipped build.
+  zipped build. The release runs on any Windows with the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) installed.
 
 Grab the newest build from the repo's [Releases](../../releases/tag/latest) page.
 
