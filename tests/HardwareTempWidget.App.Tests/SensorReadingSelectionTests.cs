@@ -76,6 +76,87 @@ public class CpuCoreReadingsTests
     }
 }
 
+public class CpuCoreGroupingTests
+{
+    private static SensorReading Core(string name, float temp) => new(name, SensorType.Cpu, temp);
+
+    [Fact]
+    public void GroupByType_WithTwoCoreTypes_GroupsByPrefix()
+    {
+        var readings = new List<SensorReading>
+        {
+            Core("CCD1 Core #0", 50f),
+            Core("CCD0 Core #1", 46f),
+            Core("CCD0 Core #0", 45f),
+            Core("CCD1 Core #1", 52f),
+        };
+
+        var result = CpuCoreReadings.GroupByType(readings);
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal("CCD0", result[0].Type);
+        Assert.Equal("CCD1", result[1].Type);
+        Assert.Equal(new[] { 0, 1 }, result[0].Cores.Select(CpuCoreReadings.CoreNumber));
+        Assert.Equal(new[] { 0, 1 }, result[1].Cores.Select(CpuCoreReadings.CoreNumber));
+    }
+
+    [Fact]
+    public void GroupByType_NoCores_ReturnsEmpty()
+    {
+        Assert.Empty(CpuCoreReadings.GroupByType(new List<SensorReading>
+        {
+            new("GPU", SensorType.Gpu, 70f),
+            new("CPU Package", SensorType.Cpu, 60f),
+        }));
+    }
+
+    [Fact]
+    public void GroupByType_EmptyInput_ReturnsEmpty()
+    {
+        Assert.Empty(CpuCoreReadings.GroupByType([]));
+    }
+
+    [Fact]
+    public void GroupByType_MapsKnownCoreTypeAbbreviations()
+    {
+        var result = CpuCoreReadings.GroupByType(new List<SensorReading>
+        {
+            Core("P-Core #1", 51f),
+            Core("E-Core #2", 40f),
+            Core("P-Core #2", 52f),
+        });
+
+        Assert.Equal(2, result.Count);
+        Assert.Equal("Efficiency (E)", result[0].Type);
+        Assert.Equal("Performance (P)", result[1].Type);
+    }
+
+    [Fact]
+    public void GroupByType_KeepsUnknownPrefixesVerbatim()
+    {
+        var result = CpuCoreReadings.GroupByType(new List<SensorReading>
+        {
+            Core("CCD0 Core #2", 45f),
+        });
+
+        Assert.Equal("CCD0", result[0].Type);
+    }
+
+    [Fact]
+    public void GroupByType_OrdersCoresNumerically()
+    {
+        var result = CpuCoreReadings.GroupByType(new List<SensorReading>
+        {
+            Core("CPU Core #10", 1f),
+            Core("CPU Core #2", 2f),
+            Core("CPU Core #1", 3f),
+        });
+
+        Assert.Equal("CPU", result[0].Type);
+        Assert.Equal(new[] { 1, 2, 10 }, result[0].Cores.Select(CpuCoreReadings.CoreNumber));
+    }
+}
+
 public class PrimaryTemperatureSelectorTests
 {
     private static SensorReading Reading(string name, SensorType type, float temp) => new(name, type, temp);

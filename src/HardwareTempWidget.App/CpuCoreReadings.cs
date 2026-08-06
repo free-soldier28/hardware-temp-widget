@@ -14,13 +14,26 @@ internal static partial class CpuCoreReadings
             .ThenBy(CoreNumber)
             .ToList();
 
+    public static List<(string Type, List<SensorReading> Cores)> GroupByType(IReadOnlyList<SensorReading> readings) =>
+        Extract(readings)
+            .GroupBy(r => CorePrefix(r.Name).Trim(), StringComparer.OrdinalIgnoreCase)
+            .Select(g => (Type: DisplayName(g.Key), Cores: g.OrderBy(CoreNumber).ToList()))
+            .ToList();
+
+    private static string DisplayName(string prefix) => prefix.Trim().TrimEnd('-').ToUpperInvariant() switch
+    {
+        "P" => Localization.T("CoreType.Performance"),
+        "E" => Localization.T("CoreType.Efficiency"),
+        _ => prefix,
+    };
+
     private static string CorePrefix(string name)
     {
         var index = name.IndexOf("Core #", StringComparison.OrdinalIgnoreCase);
         return index < 0 ? name : name[..index];
     }
 
-    private static int CoreNumber(SensorReading reading)
+    public static int CoreNumber(SensorReading reading)
     {
         var match = CoreNumberRegex().Match(reading.Name);
         return match.Success ? int.Parse(match.Groups[1].Value) : int.MaxValue;

@@ -34,6 +34,8 @@ public static class Localization
             "{0} temperature reached {1:F0}°C (threshold {2}°C).",
             "Температура {0} достигла {1:F0}°C (порог {2}°C)."),
         ["Tooltip.NoPerCoreData"] = ("Per-core data unavailable", "Данные по ядрам недоступны"),
+        ["CoreType.Performance"] = ("Performance (P)", "Производительные (P)"),
+        ["CoreType.Efficiency"] = ("Efficiency (E)", "Эффективные (E)"),
         ["Settings.PerCoreUnavailable"] = (
             "Per-core CPU temperatures aren't available. Install a driver to enable them.",
             "Температура по отдельным ядрам CPU недоступна. Установите драйвер, чтобы это исправить."),

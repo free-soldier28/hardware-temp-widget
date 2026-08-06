@@ -129,15 +129,13 @@ public partial class MainWindow : Window
         CheckOverheat(SensorType.Cpu, cpu, ref _cpuOverheating);
         CheckOverheat(SensorType.Gpu, gpu, ref _gpuOverheating);
 
-        var cpuCoreTooltip = BuildCpuCoreTooltip(readings);
-
         Dispatcher.UIThread.Post(() =>
         {
             CpuValueText.Text = FormatTemperature(cpu);
             CpuValueText.Foreground = ColorFor(cpu);
             GpuValueText.Text = FormatTemperature(gpu);
             GpuValueText.Foreground = ColorFor(gpu);
-            ToolTip.SetTip(CpuPanel, cpuCoreTooltip);
+            ToolTip.SetTip(CpuPanel, BuildCpuCoreTooltip(readings));
 
             ForceTopmost();
             TemperaturesChanged?.Invoke(cpu, gpu);
@@ -157,17 +155,45 @@ public partial class MainWindow : Window
         };
     }
 
-    private static string BuildCpuCoreTooltip(IReadOnlyList<SensorReading> readings)
+    private static object BuildCpuCoreTooltip(IReadOnlyList<SensorReading> readings)
     {
-        var cores = CpuCoreReadings.Extract(readings);
+        var groups = CpuCoreReadings.GroupByType(readings);
 
-        if (cores.Count == 0)
+        if (groups.Count == 0)
         {
             return Localization.T("Tooltip.NoPerCoreData");
         }
 
-        return string.Join(Environment.NewLine,
-            cores.Select(c => $"{c.Name}: {c.TemperatureCelsius:F0}°C"));
+        var tooltip = new StackPanel { Spacing = 6 };
+
+        foreach (var (type, cores) in groups)
+        {
+            var rows = new StackPanel { Spacing = 2 };
+
+            if (type.Length > 0)
+            {
+                rows.Children.Add(new TextBlock { Text = type, FontWeight = FontWeight.Bold });
+            }
+
+            foreach (var core in cores)
+            {
+                rows.Children.Add(new TextBlock
+                {
+                    Text = $"#{CpuCoreReadings.CoreNumber(core)}: {core.TemperatureCelsius:F0}°C",
+                });
+            }
+
+            tooltip.Children.Add(new Border
+            {
+                BorderBrush = Brushes.Gray,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(4),
+                Padding = new Thickness(10, 6),
+                Child = rows,
+            });
+        }
+
+        return tooltip;
     }
 
     private void CheckOverheat(SensorType type, float? celsius, ref bool isOverheating)
