@@ -9,6 +9,7 @@ public static class Localization
         ["Settings.Title"] = ("Settings — HardwareTempWidget", "Настройки — HardwareTempWidget"),
         ["Settings.Language"] = ("Language", "Язык"),
         ["Settings.Opacity"] = ("Opacity", "Прозрачность"),
+        ["Settings.FontSize"] = ("Panel font size", "Размер шрифта на панели"),
         ["Settings.PollInterval"] = ("Poll interval (ms)", "Интервал опроса (мс)"),
         ["Settings.Autostart"] = ("Start with Windows", "Запускать вместе с Windows"),
         ["Settings.DisplayOnPanel"] = ("Show on panel", "Отображать на панели"),

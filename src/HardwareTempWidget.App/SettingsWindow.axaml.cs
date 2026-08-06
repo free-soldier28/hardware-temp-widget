@@ -25,10 +25,11 @@ public partial class SettingsWindow : Window
         LanguageComboBox.SelectedIndex = settings.Language == AppLanguage.Russian ? 1 : 0;
 
         OpacitySlider.Value = settings.Opacity;
+        FontSizeSlider.Value = settings.PanelFontSize;
+        FontSizeSlider.ValueChanged += OnFontSizeChanged;
+        UpdateFontPreview(settings.PanelFontSize);
         IntervalUpDown.Value = settings.PollIntervalMs;
-        AutostartCheckBox.IsChecked = mainWindow.AutostartService.IsEnabled;
-
-        ShowCpuOnPanelCheckBox.IsChecked = settings.ShowCpuOnPanel;
+        AutostartCheckBox.IsChecked = mainWindow.AutostartService.IsEnabled;        ShowCpuOnPanelCheckBox.IsChecked = settings.ShowCpuOnPanel;
         ShowGpuOnPanelCheckBox.IsChecked = settings.ShowGpuOnPanel;
 
         CpuModeComboBox.SelectedIndex = (int)settings.CpuDisplayMode;
@@ -45,6 +46,7 @@ public partial class SettingsWindow : Window
         Title = Localization.T("Settings.Title");
         LanguageLabel.Text = Localization.T("Settings.Language");
         OpacityLabel.Text = Localization.T("Settings.Opacity");
+        FontSizeLabel.Text = Localization.T("Settings.FontSize");
         PollIntervalLabel.Text = Localization.T("Settings.PollInterval");
         AutostartCheckBox.Content = Localization.T("Settings.Autostart");
         DisplayOnPanelLabel.Text = Localization.T("Settings.DisplayOnPanel");
@@ -71,6 +73,7 @@ public partial class SettingsWindow : Window
         var settings = _mainWindow.Settings;
         settings.Language = LanguageComboBox.SelectedIndex == 1 ? AppLanguage.Russian : AppLanguage.English;
         settings.Opacity = OpacitySlider.Value;
+        settings.PanelFontSize = FontSizeSlider.Value;
         settings.PollIntervalMs = (int)(IntervalUpDown.Value ?? settings.PollIntervalMs);
 
         settings.ShowCpuOnPanel = ShowCpuOnPanelCheckBox.IsChecked == true;
@@ -84,6 +87,7 @@ public partial class SettingsWindow : Window
         settings.OverheatThresholdCelsius = (int)(OverheatThresholdUpDown.Value ?? settings.OverheatThresholdCelsius);
 
         _mainWindow.Opacity = settings.Opacity;
+        _mainWindow.ApplyPanelFontSize();
         _mainWindow.PollingService.Interval = TimeSpan.FromMilliseconds(settings.PollIntervalMs);
         _mainWindow.ApplyPanelVisibility();
 
@@ -103,6 +107,20 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void OnFontSizeChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        UpdateFontPreview(e.NewValue);
+    }
+
+    private void UpdateFontPreview(double size)
+    {
+        FontSizeValueText.Text = size.ToString("F0");
+        PreviewCpuLabel.FontSize = size * 0.8;
+        PreviewGpuLabel.FontSize = size * 0.8;
+        PreviewCpuValue.FontSize = size;
+        PreviewGpuValue.FontSize = size;
+    }
 
     private void OnCheckUpdatesClick(object? sender, RoutedEventArgs e)
     {

@@ -18,6 +18,7 @@ public class AppSettingsTests
         Assert.Equal(CpuDisplayMode.Smoothing, settings.CpuDisplayMode);
         Assert.True(settings.OverheatNotificationsEnabled);
         Assert.Equal(85, settings.OverheatThresholdCelsius);
+        Assert.Equal(15, settings.PanelFontSize);
     }
 }
 

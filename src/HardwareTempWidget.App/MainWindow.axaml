@@ -16,12 +16,12 @@
 
     <Window.Styles>
         <Style Selector="TextBlock.value">
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style Selector="TextBlock.label">
-            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="Foreground" Value="#AAAAAA" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
@@ -36,13 +36,13 @@
         </ContextMenu>
     </Window.ContextMenu>
 
-    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel x:Name="PanelHost" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel x:Name="CpuPanel" Orientation="Horizontal" Spacing="4">
-            <TextBlock Classes="label" Text="CPU" />
+            <TextBlock x:Name="CpuLabelText" Classes="label" Text="CPU" />
             <TextBlock x:Name="CpuValueText" Classes="value" Text="--°" />
         </StackPanel>
         <StackPanel x:Name="GpuPanel" Orientation="Horizontal" Spacing="4">
-            <TextBlock Classes="label" Text="GPU" />
+            <TextBlock x:Name="GpuLabelText" Classes="label" Text="GPU" />
             <TextBlock x:Name="GpuValueText" Classes="value" Text="--°" />
         </StackPanel>
     </StackPanel>

@@ -23,4 +23,6 @@ public sealed class AppSettings
     public bool OverheatNotificationsEnabled { get; set; } = true;
 
     public int OverheatThresholdCelsius { get; set; } = 85;
+
+    public double PanelFontSize { get; set; } = 15;
 }

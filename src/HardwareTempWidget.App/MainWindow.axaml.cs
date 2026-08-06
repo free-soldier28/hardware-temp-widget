@@ -24,6 +24,8 @@ public partial class MainWindow : Window
 
     private readonly MovingAverage _cpuSmoother = new(5);
 
+    private bool _positioned;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -35,6 +37,7 @@ public partial class MainWindow : Window
 
         Opacity = _settings.Opacity;
         ApplyPanelVisibility();
+        ApplyPanelFontSize();
 
         _pollingService = new SensorPollingService(_sensorProvider, TimeSpan.FromMilliseconds(_settings.PollIntervalMs));
         _pollingService.ReadingsUpdated += OnReadingsUpdated;
@@ -72,13 +75,53 @@ public partial class MainWindow : Window
     {
         CpuPanel.IsVisible = _settings.ShowCpuOnPanel;
         GpuPanel.IsVisible = _settings.ShowGpuOnPanel;
+        if (_positioned)
+        {
+            ResizeToContent();
+        }
+    }
+
+    public void ApplyPanelFontSize()
+    {
+        var size = _settings.PanelFontSize;
+        CpuLabelText.FontSize = size * 0.8;
+        GpuLabelText.FontSize = size * 0.8;
+        CpuValueText.FontSize = size;
+        GpuValueText.FontSize = size;
+        if (_positioned)
+        {
+            ResizeToContent();
+        }
+    }
+
+    public void ResizeToContent()
+    {
+        var oldWidthPx = (int)(Width * RenderScaling);
+        var centerX = Position.X + oldWidthPx / 2;
+
+        PanelHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        Width = Math.Max(40, Math.Ceiling(PanelHost.DesiredSize.Width) + 8);
+
+        var newWidthPx = (int)(Width * RenderScaling);
+        Position = new PixelPoint(centerX - newWidthPx / 2, Position.Y);
     }
 
     private void OnOpened(object? sender, EventArgs e)
     {
+        PositionWindow();
+
+        RefreshAutostartMenuHeader();
+        ForceTopmost();
+        _pollingService.Start();
+    }
+
+    private void PositionWindow()
+    {
         // Positioning uses raw Win32 pixel coordinates throughout (matching what
         // SetWindowPos ultimately expects) rather than Avalonia's Screens API,
         // whose reported WorkingArea does not line up with Win32 in this host.
+        ResizeToContent();
+
         var taskbar = TaskbarInfo.GetTaskbarBounds();
         var trayNotify = TaskbarInfo.GetTrayNotifyBounds();
         var widthPx = (int)(Width * RenderScaling);
@@ -100,9 +143,7 @@ public partial class MainWindow : Window
             Position = new PixelPoint(area.Right - widthPx - 16, area.Bottom - heightPx - 16);
         }
 
-        RefreshAutostartMenuHeader();
-        ForceTopmost();
-        _pollingService.Start();
+        _positioned = true;
     }
 
     private void ForceTopmost()

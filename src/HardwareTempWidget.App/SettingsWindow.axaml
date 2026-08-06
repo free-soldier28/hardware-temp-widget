@@ -26,6 +26,26 @@
         </StackPanel>
 
         <StackPanel Spacing="4">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock x:Name="FontSizeLabel" />
+                <TextBlock x:Name="FontSizeValueText" VerticalAlignment="Center" />
+            </StackPanel>
+            <Slider x:Name="FontSizeSlider" Minimum="10" Maximum="30" />
+            <Border Background="#CC1E1E28" CornerRadius="6" Padding="10,4" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock x:Name="PreviewCpuLabel" Text="CPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                        <TextBlock x:Name="PreviewCpuValue" Text="45°" Foreground="LimeGreen" FontWeight="Bold" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock x:Name="PreviewGpuLabel" Text="GPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                        <TextBlock x:Name="PreviewGpuValue" Text="62°" Foreground="Orange" FontWeight="Bold" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
             <TextBlock x:Name="PollIntervalLabel" />
             <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
         </StackPanel>
