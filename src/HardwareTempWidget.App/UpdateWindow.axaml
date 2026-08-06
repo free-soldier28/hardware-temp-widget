@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="HardwareTempWidget.App.UpdateWindow"
+        Width="380"
+        SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Icon="/Assets/app.ico">
+
+    <StackPanel Margin="16" Spacing="14">
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="VersionText" FontWeight="Bold" />
+            <TextBlock x:Name="StatusText" TextWrapping="Wrap" />
+            <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" IsVisible="False" Height="18" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button x:Name="CheckButton" Click="OnCheckClick" />
+            <Button x:Name="InstallButton" Click="OnInstallClick" IsVisible="False" />
+            <Button x:Name="CloseButton" Click="OnCloseClick" />
+        </StackPanel>
+    </StackPanel>
+</Window>

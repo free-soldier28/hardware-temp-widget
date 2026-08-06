@@ -27,6 +27,7 @@ public static class Localization
         ["Menu.Settings"] = ("Settings…", "Настройки…"),
         ["Menu.AutostartOn"] = ("Autostart: on", "Автозапуск: включён"),
         ["Menu.AutostartOff"] = ("Autostart: off", "Автозапуск: выключен"),
+        ["Menu.CheckUpdates"] = ("Check for updates…", "Проверить обновления…"),
         ["Menu.Exit"] = ("Exit", "Выход"),
         ["Tray.ToggleVisibility"] = ("Show/hide", "Показать/скрыть"),
         ["Notify.OverheatTitle"] = ("Overheating: {0}", "Перегрев {0}"),
@@ -46,8 +47,17 @@ public static class Localization
         ["Settings.InstallingDriver"] = ("Installing…", "Установка…"),
         ["Settings.InstallSuccessRestarting"] = ("Installed. Restarting…", "Установлено. Перезапуск…"),
         ["Settings.InstallFailed"] = (
-            "Installation failed. Try running as administrator, or install PawnIO manually from pawnio.eu.",
+            "Installation failed. Try running as Administrator, or install PawnIO manually from pawnio.eu.",
             "Не удалось установить. Попробуйте запустить от имени администратора или установите PawnIO вручную с pawnio.eu."),
+        ["Update.Title"] = ("Update — HardwareTempWidget", "Обновление — HardwareTempWidget"),
+        ["Update.CurrentVersion"] = ("Current version: {0}", "Текущая версия: {0}"),
+        ["Update.CheckNow"] = ("Check for updates", "Проверить обновления"),
+        ["Update.Checking"] = ("Checking for updates…", "Проверка обновлений…"),
+        ["Update.UpToDate"] = ("You're running the latest version.", "Установлена последняя версия."),
+        ["Update.Available"] = ("Version {0} is available.", "Доступна версия {0}."),
+        ["Update.DownloadInstall"] = ("Download & install", "Скачать и установить"),
+        ["Update.Downloading"] = ("Downloading…", "Загрузка…"),
+        ["Update.Installed"] = ("Update installed. Restarting…", "Обновление установлено. Перезапуск…"),
     };
 
     public static AppLanguage Current { get; private set; } = AppLanguage.English;

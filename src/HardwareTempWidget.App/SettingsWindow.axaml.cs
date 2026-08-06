@@ -55,6 +55,7 @@ public partial class SettingsWindow : Window
         OverheatThresholdLabel.Text = Localization.T("Settings.OverheatThreshold");
         CancelButton.Content = Localization.T("Common.Cancel");
         SaveButton.Content = Localization.T("Common.Save");
+        CheckUpdatesButton.Content = Localization.T("Menu.CheckUpdates");
     }
 
     private void OnSaveClick(object? sender, RoutedEventArgs e)
@@ -102,6 +103,12 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void OnCheckUpdatesClick(object? sender, RoutedEventArgs e)
+    {
+        var updateWindow = new UpdateWindow();
+        updateWindow.Show(this);
+    }
 
     private void PopulateCpuModeComboBox()
     {

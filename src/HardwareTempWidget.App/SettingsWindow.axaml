@@ -71,5 +71,9 @@
             <Button x:Name="CancelButton" Click="OnCancelClick" />
             <Button x:Name="SaveButton" Click="OnSaveClick" />
         </StackPanel>
+
+        <StackPanel Spacing="4">
+            <Button x:Name="CheckUpdatesButton" Click="OnCheckUpdatesClick" HorizontalAlignment="Left" />
+        </StackPanel>
     </StackPanel>
 </Window>

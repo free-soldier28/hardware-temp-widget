@@ -14,6 +14,7 @@
                     <NativeMenu>
                         <NativeMenuItem Click="OnTrayToggleClick" />
                         <NativeMenuItem Click="OnTraySettingsClick" />
+                        <NativeMenuItem Click="OnTrayCheckUpdatesClick" />
                         <NativeMenuItem Click="OnTrayExitClick" />
                     </NativeMenu>
                 </TrayIcon.Menu>

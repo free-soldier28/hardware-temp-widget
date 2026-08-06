@@ -29,7 +29,8 @@ public partial class App : Application
 
         ((NativeMenuItem)menu.Items[0]).Header = Localization.T("Tray.ToggleVisibility");
         ((NativeMenuItem)menu.Items[1]).Header = Localization.T("Menu.Settings");
-        ((NativeMenuItem)menu.Items[2]).Header = Localization.T("Menu.Exit");
+        ((NativeMenuItem)menu.Items[2]).Header = Localization.T("Menu.CheckUpdates");
+        ((NativeMenuItem)menu.Items[3]).Header = Localization.T("Menu.Exit");
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -63,6 +64,8 @@ public partial class App : Application
     private void OnTrayToggleClick(object? sender, EventArgs e) => _mainWindow?.ToggleVisibility();
 
     private void OnTraySettingsClick(object? sender, EventArgs e) => _mainWindow?.ShowSettings();
+
+    private void OnTrayCheckUpdatesClick(object? sender, EventArgs e) => _mainWindow?.ShowUpdates();
 
     private void OnTrayExitClick(object? sender, EventArgs e)
     {

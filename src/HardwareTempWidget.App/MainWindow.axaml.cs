@@ -245,6 +245,12 @@ public partial class MainWindow : Window
         settingsWindow.Show(this);
     }
 
+    public void ShowUpdates()
+    {
+        var updateWindow = new UpdateWindow();
+        updateWindow.Show(this);
+    }
+
     private void OnToggleAutostartClick(object? sender, RoutedEventArgs e)
     {
         if (_autostartService.IsEnabled)
