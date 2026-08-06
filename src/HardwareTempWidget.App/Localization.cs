@@ -24,6 +24,7 @@ public static class Localization
         ["Settings.OverheatThreshold"] = ("Overheat threshold (°C)", "Порог перегрева (°C)"),
         ["Common.Cancel"] = ("Cancel", "Отмена"),
         ["Common.Save"] = ("Save", "Сохранить"),
+        ["Common.Close"] = ("Close", "Закрыть"),
         ["Menu.Settings"] = ("Settings…", "Настройки…"),
         ["Menu.AutostartOn"] = ("Autostart: on", "Автозапуск: включён"),
         ["Menu.AutostartOff"] = ("Autostart: off", "Автозапуск: выключен"),
