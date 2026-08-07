@@ -11,16 +11,21 @@ namespace HardwareTempWidget.App;
 public partial class SettingsWindow : Window
 {
     private readonly MainWindow _mainWindow;
+    private readonly IAppUpdater _updater;
+    private AppUpdateInfo? _update;
 
     public SettingsWindow(MainWindow mainWindow)
     {
         InitializeComponent();
 
         _mainWindow = mainWindow;
+        _updater = new AppUpdater();
 
         ApplyLocalization();
         PopulateCpuModeComboBox();
         RefreshPerCoreSection();
+        UpdateVersionText.Text = string.Format(Localization.T("Update.CurrentVersion"), VersionHelper.Current.ToString(3));
+        _ = CheckForUpdatesAsync();
 
         var settings = mainWindow.Settings;
         LanguageComboBox.SelectedIndex = settings.Language == AppLanguage.Russian ? 1 : 0;
@@ -58,6 +63,10 @@ public partial class SettingsWindow : Window
     private void ApplyLocalization()
     {
         Title = Localization.T("Settings.Title");
+        GeneralTab.Header = Localization.T("Tab.General");
+        AppearanceTab.Header = Localization.T("Tab.Appearance");
+        PanelTab.Header = Localization.T("Tab.Panel");
+        NotificationsTab.Header = Localization.T("Tab.Notifications");
         LanguageLabel.Text = Localization.T("Settings.Language");
         OpacityLabel.Text = Localization.T("Settings.Opacity");
         BackgroundColorLabel.Text = Localization.T("Settings.BackgroundColor");
@@ -73,7 +82,9 @@ public partial class SettingsWindow : Window
         OverheatThresholdLabel.Text = Localization.T("Settings.OverheatThreshold");
         CancelButton.Content = Localization.T("Common.Cancel");
         SaveButton.Content = Localization.T("Common.Save");
-        CheckUpdatesButton.Content = Localization.T("Menu.CheckUpdates");
+        UpdatesTab.Header = Localization.T("Tab.Updates");
+        UpdateCheckButton.Content = Localization.T("Update.CheckNow");
+        UpdateInstallButton.Content = Localization.T("Update.DownloadInstall");
     }
 
     private void OnSaveClick(object? sender, RoutedEventArgs e)
@@ -209,6 +220,55 @@ public partial class SettingsWindow : Window
     {
         PreviewCpuPanel.IsVisible = ShowCpuOnPanelCheckBox.IsChecked == true;
         PreviewGpuPanel.IsVisible = ShowGpuOnPanelCheckBox.IsChecked == true;
+    }
+
+    private async void OnUpdateCheckClick(object? sender, RoutedEventArgs e) => await CheckForUpdatesAsync();
+
+    private async Task CheckForUpdatesAsync()
+    {
+        UpdateCheckButton.IsEnabled = false;
+        UpdateInstallButton.IsVisible = false;
+        UpdateProgressBar.IsVisible = false;
+        UpdateStatusText.Text = Localization.T("Update.Checking");
+
+        var update = await _updater.CheckForUpdateAsync(VersionHelper.Current);
+
+        UpdateCheckButton.IsEnabled = true;
+        if (update is null)
+        {
+            UpdateStatusText.Text = Localization.T("Update.UpToDate");
+            return;
+        }
+
+        _update = update;
+        UpdateStatusText.Text = string.Format(Localization.T("Update.Available"), update.Version.ToString(3));
+        UpdateInstallButton.IsVisible = true;
+    }
+
+    private async void OnUpdateInstallClick(object? sender, RoutedEventArgs e)
+    {
+        if (_update is null)
+        {
+            return;
+        }
+
+        UpdateCheckButton.IsEnabled = false;
+        UpdateInstallButton.IsEnabled = false;
+        UpdateProgressBar.IsVisible = true;
+        UpdateStatusText.Text = Localization.T("Update.Downloading");
+
+        await _updater.DownloadAndInstallAsync(_update, value =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                UpdateProgressBar.Value = value * 100;
+                UpdateStatusText.Text = $"{Localization.T("Update.Downloading")} {value * 100:F0}%";
+            });
+        });
+
+        UpdateStatusText.Text = Localization.T("Update.Installed");
+        await Task.Delay(500);
+        RestartApp();
     }
 
     private void OnCheckUpdatesClick(object? sender, RoutedEventArgs e)

@@ -7,6 +7,12 @@ public static class Localization
     private static readonly Dictionary<string, (string En, string Ru)> Strings = new()
     {
         ["Settings.Title"] = ("Settings — HardwareTempWidget", "Настройки — HardwareTempWidget"),
+        ["Tab.General"] = ("General", "Общие"),
+        ["Tab.Appearance"] = ("Appearance", "Внешний вид"),
+        ["Tab.Panel"] = ("Panel & Tray", "Панель и трей"),
+        ["Tab.Notifications"] = ("Notifications", "Уведомления"),
+        ["Tab.Advanced"] = ("Advanced", "Дополнительно"),
+        ["Tab.Updates"] = ("Updates", "Обновления"),
         ["Settings.Language"] = ("Language", "Язык"),
         ["Settings.Opacity"] = ("Opacity", "Прозрачность"),
         ["Settings.BackgroundColor"] = ("Background color", "Цвет фона"),

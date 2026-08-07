@@ -8,7 +8,7 @@ public class AppSettingsTests
         var settings = new AppSettings();
 
         Assert.Equal(AppLanguage.English, settings.Language);
-        Assert.Equal(0.85, settings.Opacity);
+        Assert.Equal(1.0, settings.Opacity);
         Assert.Equal(1500, settings.PollIntervalMs);
         Assert.Null(settings.WindowLeft);
         Assert.Null(settings.WindowTop);

@@ -4,115 +4,154 @@
         xmlns:controls="using:HardwareTempWidget.App.Controls"
         mc:Ignorable="d"
         x:Class="HardwareTempWidget.App.SettingsWindow"
-        Width="360"
+        Width="380"
         Height="600"
-        MinHeight="420"
+        MinHeight="460"
         CanResize="True"
         WindowStartupLocation="CenterOwner"
         Icon="/Assets/app.ico">
 
-    <ScrollViewer>
-        <StackPanel Margin="16" Spacing="14">
-        <StackPanel Spacing="4">
-            <TextBlock x:Name="LanguageLabel" />
-            <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
-                <ComboBoxItem Content="English" />
-                <ComboBoxItem Content="Русский" />
-            </ComboBox>
-        </StackPanel>
+    <Window.Styles>
+        <Style Selector="TabControl">
+            <Setter Property="TabStripPlacement" Value="Top" />
+        </Style>
+        <Style Selector="TabControl TabItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0" />
+        </Style>
+    </Window.Styles>
 
-        <Separator />
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom" Margin="16,8,16,12" HorizontalAlignment="Right" ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+            <Button Grid.Column="0" x:Name="CancelButton" Click="OnCancelClick" />
+            <Button Grid.Column="1" x:Name="SaveButton" Click="OnSaveClick" />
+        </Grid>
 
-<StackPanel Spacing="4">
-            <TextBlock x:Name="BackgroundColorLabel" />
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <Border x:Name="ColorSwatch" Width="24" Height="24" CornerRadius="3" Background="#CC1E1E28" VerticalAlignment="Center" />
-                <TextBlock x:Name="ColorValueText" VerticalAlignment="Center" />
-            </StackPanel>
-            <controls:ColorWheel x:Name="ColorWheelControl" Width="220" Height="220" HorizontalAlignment="Center" />
-            <TextBlock x:Name="PresetColorsLabel" FontWeight="Bold" />
-            <WrapPanel x:Name="PresetColorsPanel" Orientation="Horizontal" />
-            <Button x:Name="ResetColorButton" Click="OnResetColorClick" HorizontalAlignment="Left" IsVisible="False" />
-        </StackPanel>
+        <TabControl DockPanel.Dock="Top" Margin="8">
+            <TabItem x:Name="GeneralTab" Header="Общие">
+                <ScrollViewer>
+                    <StackPanel Margin="16" Spacing="14">
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="LanguageLabel" />
+                            <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="English" />
+                                <ComboBoxItem Content="Русский" />
+                            </ComboBox>
+                        </StackPanel>
 
-        <StackPanel Spacing="4">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock x:Name="OpacityLabel" />
-                <TextBlock x:Name="OpacityValueText" VerticalAlignment="Center" />
-            </StackPanel>
-            <Slider x:Name="OpacitySlider" Minimum="0.3" Maximum="1.0" />
-        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="PollIntervalLabel" />
+                            <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
+                        </StackPanel>
 
-        <StackPanel Spacing="4">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock x:Name="FontSizeLabel" />
-                <TextBlock x:Name="FontSizeValueText" VerticalAlignment="Center" />
-            </StackPanel>
-            <Slider x:Name="FontSizeSlider" Minimum="10" Maximum="30" />
-            <Border x:Name="PreviewBorder" Background="#CC1E1E28" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
-                    <StackPanel x:Name="PreviewCpuPanel" Orientation="Horizontal" Spacing="4">
-                        <TextBlock x:Name="PreviewCpuLabel" Text="CPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
-                        <TextBlock x:Name="PreviewCpuValue" Text="45°" Foreground="LimeGreen" FontWeight="Bold" VerticalAlignment="Center" />
+                        <CheckBox x:Name="AutostartCheckBox" />
+
+                        <StackPanel x:Name="PerCorePanel" Spacing="4" IsVisible="False">
+                            <TextBlock x:Name="PerCoreStatusText" TextWrapping="Wrap" Foreground="OrangeRed" />
+                            <Button x:Name="InstallDriverButton" Click="OnInstallDriverClick" HorizontalAlignment="Left" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel x:Name="PreviewGpuPanel" Orientation="Horizontal" Spacing="4">
-                        <TextBlock x:Name="PreviewGpuLabel" Text="GPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
-                        <TextBlock x:Name="PreviewGpuValue" Text="62°" Foreground="Orange" FontWeight="Bold" VerticalAlignment="Center" />
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem x:Name="AppearanceTab" Header="Оформление">
+                <ScrollViewer>
+                    <StackPanel Margin="16" Spacing="14">
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="BackgroundColorLabel" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border x:Name="ColorSwatch" Width="24" Height="24" CornerRadius="3" Background="#CC1E1E28" VerticalAlignment="Center" />
+                                <TextBlock x:Name="ColorValueText" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <controls:ColorWheel x:Name="ColorWheelControl" Width="220" Height="220" HorizontalAlignment="Center" />
+                            <TextBlock x:Name="PresetColorsLabel" FontWeight="Bold" />
+                            <WrapPanel x:Name="PresetColorsPanel" Orientation="Horizontal" />
+                            <Button x:Name="ResetColorButton" Click="OnResetColorClick" HorizontalAlignment="Left" IsVisible="False" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="OpacityLabel" />
+                                <TextBlock x:Name="OpacityValueText" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <Slider x:Name="OpacitySlider" Minimum="0.3" Maximum="1.0" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="FontSizeLabel" />
+                                <TextBlock x:Name="FontSizeValueText" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <Slider x:Name="FontSizeSlider" Minimum="10" Maximum="30" />
+                        </StackPanel>
+
+                        <Border x:Name="PreviewBorder" Background="#CC1E1E28" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+                                <StackPanel x:Name="PreviewCpuPanel" Orientation="Horizontal" Spacing="4">
+                                    <TextBlock x:Name="PreviewCpuLabel" Text="CPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="PreviewCpuValue" Text="45°" Foreground="LimeGreen" FontWeight="Bold" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel x:Name="PreviewGpuPanel" Orientation="Horizontal" Spacing="4">
+                                    <TextBlock x:Name="PreviewGpuLabel" Text="GPU" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="PreviewGpuValue" Text="62°" Foreground="Orange" FontWeight="Bold" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem x:Name="PanelTab" Header="Panel &amp; Tray">
+                <ScrollViewer>
+                    <StackPanel Margin="16" Spacing="14">
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="DisplayOnPanelLabel" FontWeight="Bold" />
+                            <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
+                            <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
+                            <TextBlock x:Name="PanelValidationText"
+                                       Foreground="OrangeRed"
+                                       TextWrapping="Wrap"
+                                       IsVisible="False" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="CpuModeLabel" FontWeight="Bold" />
+                            <ComboBox x:Name="CpuModeComboBox" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="TrayMetricLabel" FontWeight="Bold" />
+                            <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
+                            <RadioButton x:Name="TrayGpuRadioButton" GroupName="TrayMetric" Content="GPU" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem x:Name="NotificationsTab" Header="Уведомления">
+                <StackPanel Margin="16" Spacing="14">
+                    <CheckBox x:Name="OverheatEnabledCheckBox" FontWeight="Bold" />
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Name="OverheatThresholdLabel" />
+                        <NumericUpDown x:Name="OverheatThresholdUpDown" Minimum="40" Maximum="110" Increment="1" FormatString="0" />
                     </StackPanel>
                 </StackPanel>
-            </Border>
-        </StackPanel>
+            </TabItem>
 
-        <StackPanel Spacing="4">
-            <TextBlock x:Name="PollIntervalLabel" />
-            <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
-        </StackPanel>
-
-        <CheckBox x:Name="AutostartCheckBox" />
-
-        <Separator />
-
-        <StackPanel Spacing="4">
-            <TextBlock x:Name="DisplayOnPanelLabel" FontWeight="Bold" />
-            <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
-            <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
-            <TextBlock x:Name="PanelValidationText"
-                       Foreground="OrangeRed"
-                       TextWrapping="Wrap"
-                       IsVisible="False" />
-        </StackPanel>
-
-        <StackPanel Spacing="4">
-            <TextBlock x:Name="CpuModeLabel" FontWeight="Bold" />
-            <ComboBox x:Name="CpuModeComboBox" HorizontalAlignment="Stretch" />
-        </StackPanel>
-
-        <StackPanel Spacing="4">
-            <TextBlock x:Name="TrayMetricLabel" FontWeight="Bold" />
-            <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
-            <RadioButton x:Name="TrayGpuRadioButton" GroupName="TrayMetric" Content="GPU" />
-        </StackPanel>
-
-        <StackPanel Spacing="4">
-            <CheckBox x:Name="OverheatEnabledCheckBox" FontWeight="Bold" />
-            <TextBlock x:Name="OverheatThresholdLabel" />
-            <NumericUpDown x:Name="OverheatThresholdUpDown" Minimum="40" Maximum="110" Increment="1" FormatString="0" />
-        </StackPanel>
-
-        <StackPanel x:Name="PerCorePanel" Spacing="4" IsVisible="False">
-            <Separator />
-            <TextBlock x:Name="PerCoreStatusText" TextWrapping="Wrap" Foreground="OrangeRed" />
-            <Button x:Name="InstallDriverButton" Click="OnInstallDriverClick" HorizontalAlignment="Left" />
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-            <Button x:Name="CancelButton" Click="OnCancelClick" />
-            <Button x:Name="SaveButton" Click="OnSaveClick" />
-        </StackPanel>
-
-        <StackPanel Spacing="4">
-            <Button x:Name="CheckUpdatesButton" Click="OnCheckUpdatesClick" HorizontalAlignment="Left" />
-        </StackPanel>
-    </StackPanel>
-    </ScrollViewer>
+            <TabItem x:Name="UpdatesTab">
+                <StackPanel Margin="16" Spacing="14">
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Name="UpdateVersionText" FontWeight="Bold" />
+                        <TextBlock x:Name="UpdateStatusText" TextWrapping="Wrap" />
+                        <ProgressBar x:Name="UpdateProgressBar" Minimum="0" Maximum="100" IsVisible="False" Height="18" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Name="UpdateCheckButton" Click="OnUpdateCheckClick" />
+                        <Button x:Name="UpdateInstallButton" Click="OnUpdateInstallClick" IsVisible="False" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>

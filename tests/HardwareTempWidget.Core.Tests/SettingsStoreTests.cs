@@ -16,7 +16,7 @@ public class SettingsStoreTests : IDisposable
 
         Assert.NotNull(settings);
         Assert.Equal(AppLanguage.English, settings.Language);
-        Assert.Equal(0.85, settings.Opacity);
+        Assert.Equal(1.0, settings.Opacity);
         Assert.Equal(1500, settings.PollIntervalMs);
     }
 
