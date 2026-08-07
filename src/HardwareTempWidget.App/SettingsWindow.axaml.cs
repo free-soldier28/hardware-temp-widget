@@ -244,6 +244,9 @@ public partial class SettingsWindow : Window
     private void OnPanelSelectionChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         UpdatePanelVisibilityPreview();
+        _mainWindow.SetPanelVisibility(
+            ShowCpuOnPanelCheckBox.IsChecked == true,
+            ShowGpuOnPanelCheckBox.IsChecked == true);
     }
 
     private void UpdateFontPreview(double size)

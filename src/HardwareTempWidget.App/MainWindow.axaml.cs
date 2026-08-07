@@ -94,6 +94,16 @@ public partial class MainWindow : Window
         }
     }
 
+    public void SetPanelVisibility(bool cpu, bool gpu)
+    {
+        CpuPanel.IsVisible = cpu;
+        GpuPanel.IsVisible = gpu;
+        if (_positioned)
+        {
+            ResizeToContent();
+        }
+    }
+
     public void ApplyPanelFontSize()
     {
         var size = _settings.PanelFontSize;
@@ -112,6 +122,7 @@ public partial class MainWindow : Window
         var oldWidthPx = (int)(Width * RenderScaling);
         var centerX = Position.X + oldWidthPx / 2;
 
+        PanelHost.InvalidateMeasure();
         PanelHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         Width = Math.Max(40, Math.Ceiling(PanelHost.DesiredSize.Width) + 8);
 

@@ -36,14 +36,16 @@
         </ContextMenu>
     </Window.ContextMenu>
 
-    <StackPanel x:Name="PanelHost" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel x:Name="CpuPanel" Orientation="Horizontal" Spacing="4">
-            <TextBlock x:Name="CpuLabelText" Classes="label" Text="CPU" />
-            <TextBlock x:Name="CpuValueText" Classes="value" Text="--°" />
+    <Border x:Name="PanelHost" Padding="10,4" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <StackPanel x:Name="CpuPanel" Orientation="Horizontal" Spacing="4">
+                <TextBlock x:Name="CpuLabelText" Classes="label" Text="CPU" />
+                <TextBlock x:Name="CpuValueText" Classes="value" Text="--°" />
+            </StackPanel>
+            <StackPanel x:Name="GpuPanel" Orientation="Horizontal" Spacing="4">
+                <TextBlock x:Name="GpuLabelText" Classes="label" Text="GPU" />
+                <TextBlock x:Name="GpuValueText" Classes="value" Text="--°" />
+            </StackPanel>
         </StackPanel>
-        <StackPanel x:Name="GpuPanel" Orientation="Horizontal" Spacing="4">
-            <TextBlock x:Name="GpuLabelText" Classes="label" Text="GPU" />
-            <TextBlock x:Name="GpuValueText" Classes="value" Text="--°" />
-        </StackPanel>
-    </StackPanel>
+    </Border>
 </Window>

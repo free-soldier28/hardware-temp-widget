@@ -34,7 +34,7 @@
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="14">
                         <StackPanel Spacing="4">
-                            <TextBlock x:Name="LanguageLabel" />
+                            <TextBlock x:Name="LanguageLabel" FontWeight="Bold" />
                             <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
                                 <ComboBoxItem Content="English" />
                                 <ComboBoxItem Content="Русский" />
@@ -42,8 +42,13 @@
                         </StackPanel>
 
                         <StackPanel Spacing="4">
-                            <TextBlock x:Name="PollIntervalLabel" />
+                            <TextBlock x:Name="PollIntervalLabel" FontWeight="Bold" />
                             <NumericUpDown x:Name="IntervalUpDown" Minimum="500" Maximum="10000" Increment="250" FormatString="0" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="CpuModeLabel" FontWeight="Bold" />
+                            <ComboBox x:Name="CpuModeComboBox" HorizontalAlignment="Stretch" />
                         </StackPanel>
 
                         <CheckBox x:Name="AutostartCheckBox" />
@@ -87,6 +92,16 @@
                             <Slider x:Name="FontSizeSlider" Minimum="10" Maximum="30" />
                         </StackPanel>
 
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="DisplayOnPanelLabel" FontWeight="Bold" />
+                            <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
+                            <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
+                            <TextBlock x:Name="PanelValidationText"
+                                       Foreground="OrangeRed"
+                                       TextWrapping="Wrap"
+                                       IsVisible="False" />
+                        </StackPanel>
+
                         <Border x:Name="PreviewBorder" Background="#CC1E1E28" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
                                 <StackPanel x:Name="PreviewCpuPanel" Orientation="Horizontal" Spacing="4">
@@ -106,21 +121,6 @@
             <TabItem x:Name="PanelTab" Header="Panel &amp; Tray">
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="14">
-                        <StackPanel Spacing="4">
-                            <TextBlock x:Name="DisplayOnPanelLabel" FontWeight="Bold" />
-                            <CheckBox x:Name="ShowCpuOnPanelCheckBox" Content="CPU" />
-                            <CheckBox x:Name="ShowGpuOnPanelCheckBox" Content="GPU" />
-                            <TextBlock x:Name="PanelValidationText"
-                                       Foreground="OrangeRed"
-                                       TextWrapping="Wrap"
-                                       IsVisible="False" />
-                        </StackPanel>
-
-                        <StackPanel Spacing="4">
-                            <TextBlock x:Name="CpuModeLabel" FontWeight="Bold" />
-                            <ComboBox x:Name="CpuModeComboBox" HorizontalAlignment="Stretch" />
-                        </StackPanel>
-
                         <StackPanel Spacing="4">
                             <TextBlock x:Name="TrayMetricLabel" FontWeight="Bold" />
                             <RadioButton x:Name="TrayCpuRadioButton" GroupName="TrayMetric" Content="CPU" />
