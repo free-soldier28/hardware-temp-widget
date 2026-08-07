@@ -22,6 +22,10 @@ public partial class SettingsWindow : Window
         _mainWindow = mainWindow;
         _updater = new AppUpdater();
 
+        _mainWindow.TemperaturesChanged += OnMainTemperaturesChanged;
+        Closing += (_, _) => _mainWindow.TemperaturesChanged -= OnMainTemperaturesChanged;
+        UpdateMetricIcon();
+
         Opened += (_, _) => RemoveResizeButtons();
 
         ApplyLocalization();
@@ -135,6 +139,18 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void OnMainTemperaturesChanged(float? cpu, float? gpu)
+    {
+        var metric = _mainWindow.Settings.TrayIconMetric == SensorType.Cpu ? cpu : gpu;
+        Icon = TrayIconRenderer.Render(metric);
+    }
+
+    private void UpdateMetricIcon()
+    {
+        var metric = PrimaryTemperatureSelector.Select(_mainWindow.LastReadings, _mainWindow.Settings.TrayIconMetric);
+        Icon = TrayIconRenderer.Render(metric);
+    }
 
     private const int GWL_STYLE = -16;
     private const int WS_MINIMIZEBOX = 0x00020000;
