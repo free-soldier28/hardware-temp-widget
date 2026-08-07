@@ -11,7 +11,7 @@ Docks to the taskbar right next to the system tray.
 - Flexible display: CPU and GPU readings can be shown/hidden independently on the panel.
 - Hovering the CPU value shows a tooltip with the per-core breakdown (P-core/E-core on hybrid Intel CPUs), when available.
 - Data source: [LibreHardwareMonitorLib](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor); GPU support (Nvidia/AMD/Intel) depends on whether the specific hardware/driver exposes a temperature sensor.
-- Per-core CPU temperature requires [PawnIO](https://pawnio.eu) — a signed, HVCI-compatible kernel driver LibreHardwareMonitorLib uses (since 0.9.5) instead of the unsigned WinRing0 driver, which Windows Memory Integrity (Core Isolation) blocks. If PawnIO isn't installed, Settings offers a one-click installer. On supported ASUS laptops, an aggregate (non-per-core) CPU temperature is still shown via ASUS's own WMI sensor interface even without PawnIO.
+- Per-core CPU temperature requires [PawnIO](https://pawnio.eu) — a signed, HVCI-compatible kernel driver LibreHardwareMonitorLib uses (since 0.9.5) instead of the unsigned WinRing0 driver, which Windows Memory Integrity (Core Isolation) blocks. If PawnIO isn't installed, Settings offers a one-click installer. On supported ASUS hardware, an aggregate (non-per-core) CPU temperature is still shown via ASUS's own WMI sensor interface even without PawnIO.
 
 ### Tray icon
 - Renders the selected temperature (CPU or GPU — configurable) directly on the icon, no need to open the window.
