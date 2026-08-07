@@ -24,8 +24,7 @@ public partial class SettingsWindow : Window
         ApplyLocalization();
         PopulateCpuModeComboBox();
         RefreshPerCoreSection();
-        VersionText.Text = string.Format(Localization.T("Update.CurrentVersion"), VersionHelper.Current.ToString(3));
-        UpdateVersionText.Text = VersionText.Text;
+        UpdateVersionText.Text = string.Format(Localization.T("Update.CurrentVersion"), VersionHelper.Current.ToString(3));
         _ = CheckForUpdatesAsync();
 
         var settings = mainWindow.Settings;
