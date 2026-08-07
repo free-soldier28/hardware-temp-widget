@@ -17,6 +17,7 @@
         </Style>
         <Style Selector="TabControl TabItem">
             <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Padding" Value="10,5" />
             <Setter Property="Margin" Value="0" />
         </Style>
@@ -32,8 +33,6 @@
             <TabItem x:Name="GeneralTab" Header="Общие">
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="14">
-                        <TextBlock x:Name="VersionText" FontWeight="Bold" Foreground="#888888" />
-
                         <StackPanel Spacing="4">
                             <TextBlock x:Name="LanguageLabel" />
                             <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
