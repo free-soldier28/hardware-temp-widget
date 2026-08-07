@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
@@ -20,6 +21,8 @@ public partial class SettingsWindow : Window
 
         _mainWindow = mainWindow;
         _updater = new AppUpdater();
+
+        Opened += (_, _) => RemoveResizeButtons();
 
         ApplyLocalization();
         PopulateCpuModeComboBox();
@@ -136,6 +139,48 @@ public partial class SettingsWindow : Window
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e) => Close();
+
+    private const int GWL_STYLE = -16;
+    private const int WS_MINIMIZEBOX = 0x00020000;
+    private const int WS_MAXIMIZEBOX = 0x00010000;
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
+    private static extern nint GetWindowLongPtr64(nint hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+    private static extern int GetWindowLong32(nint hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+    private static extern nint SetWindowLongPtr64(nint hWnd, int nIndex, nint dwNewLong);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+    private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);
+
+    private static int GetWindowLong(nint hWnd, int nIndex) =>
+        nint.Size == 8 ? (int)GetWindowLongPtr64(hWnd, nIndex) : GetWindowLong32(hWnd, nIndex);
+
+    private static void SetWindowLong(nint hWnd, int nIndex, int dwNewLong)
+    {
+        if (nint.Size == 8)
+        {
+            _ = SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+        }
+        else
+        {
+            SetWindowLong(hWnd, nIndex, dwNewLong);
+        }
+    }
+
+    private void RemoveResizeButtons()
+    {
+        if (TryGetPlatformHandle()?.Handle is not nint hWnd || hWnd == nint.Zero)
+        {
+            return;
+        }
+
+        var style = GetWindowLong(hWnd, GWL_STYLE) & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX;
+        SetWindowLong(hWnd, GWL_STYLE, style);
+    }
 
     private void OnWheelColorChanged(object? sender, Color e)
     {
