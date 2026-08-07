@@ -35,7 +35,7 @@ public partial class MainWindow : Window
         _autostartService = AutostartServiceFactory.Create();
         _overheatNotifier = OverheatNotifierFactory.Create();
 
-        Opacity = _settings.Opacity;
+        Opacity = 1.0;
         ApplyPanelBackground();
         ApplyPanelVisibility();
         ApplyPanelFontSize();
@@ -76,9 +76,13 @@ public partial class MainWindow : Window
     {
         if (Color.TryParse(_settings.PanelBackgroundColor, out var color))
         {
-            Background = new SolidColorBrush(color);
+            var effective = WithOpacity(color, _settings.Opacity);
+            Background = new SolidColorBrush(effective);
         }
     }
+
+    private static Color WithOpacity(Color color, double opacity) =>
+        new((byte)Math.Clamp(color.A * opacity, 0, 255), color.R, color.G, color.B);
 
     public void ApplyPanelVisibility()
     {

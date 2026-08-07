@@ -60,7 +60,7 @@ public class LocalizationTests
 
             Assert.True(raised);
             Assert.Equal(AppLanguage.Russian, Localization.Current);
-            Assert.Equal("Прозрачность", Localization.T("Settings.Opacity"));
+            Assert.Equal("Прозрачность:", Localization.T("Settings.Opacity"));
         }
         finally
         {

@@ -37,8 +37,6 @@ public partial class SettingsWindow : Window
         OpacitySlider.ValueChanged += OnOpacityChanged;
         UpdateOpacityPreview(settings.Opacity);
         ColorWheelControl.ColorChanged += OnWheelColorChanged;
-        ResetColorButton.Click += OnResetColorClick;
-        ResetColorButton.IsVisible = settings.PanelBackgroundColor != "#CC1E1E28";
         BuildPresetSwatches();
         UpdateBackgroundPreview(Color.TryParse(settings.PanelBackgroundColor, out var initColor)
             ? initColor
@@ -73,7 +71,6 @@ public partial class SettingsWindow : Window
         LanguageLabel.Text = Localization.T("Settings.Language");
         OpacityLabel.Text = Localization.T("Settings.Opacity");
         BackgroundColorLabel.Text = Localization.T("Settings.BackgroundColor");
-        PresetColorsLabel.Text = Localization.T("Settings.PresetColors");
         FontSizeLabel.Text = Localization.T("Settings.FontSize");
         PollIntervalLabel.Text = Localization.T("Settings.PollInterval");
         AutostartCheckBox.Content = Localization.T("Settings.Autostart");
@@ -117,7 +114,6 @@ public partial class SettingsWindow : Window
         settings.OverheatNotificationsEnabled = OverheatEnabledCheckBox.IsChecked == true;
         settings.OverheatThresholdCelsius = (int)(OverheatThresholdUpDown.Value ?? settings.OverheatThresholdCelsius);
 
-        _mainWindow.Opacity = settings.Opacity;
         _mainWindow.ApplyPanelBackground();
         _mainWindow.ApplyPanelFontSize();
         _mainWindow.PollingService.Interval = TimeSpan.FromMilliseconds(settings.PollIntervalMs);
@@ -188,19 +184,14 @@ public partial class SettingsWindow : Window
         UpdateBackgroundPreview(new Color(a, e.R, e.G, e.B));
     }
 
-    private void OnResetColorClick(object? sender, RoutedEventArgs e)
-    {
-        UpdateBackgroundPreview(Color.Parse("#CC1E1E28"));
-    }
-
     private void BuildPresetSwatches()
     {
         var presets = new[]
         {
-            "#FF1E1E28", "#FF0F1115",
-            "#FFFF0000", "#FF00FF00", "#FF0000FF", "#FFFFFF00",
+            "#FF1E1E28", "#FF0F1115", "#FF808080",
+            "#FF0000FF", "#FFFFFF00",
             "#FFFF00FF", "#FF00FFFF", "#FFFFA500", "#FFFFC0CB",
-            "#FFA52A2A", "#FF008000", "#FF000080", "#FF800000", "#FF808080",
+            "#FFA52A2A", "#FF000080", "#FF800000",
         };
 
         foreach (var hex in presets)
@@ -222,14 +213,16 @@ public partial class SettingsWindow : Window
     private void UpdateBackgroundPreview(Color color)
     {
         _hexColor = color.ToString();
-        PreviewBorder.Background = new SolidColorBrush(color);
+        PreviewBorder.Background = new SolidColorBrush(ApplyOpacity(color, OpacitySlider.Value));
         ColorSwatch.Background = new SolidColorBrush(color);
         ColorValueText.Text = _hexColor;
         ColorWheelControl.Color = new Color(255, color.R, color.G, color.B);
-        ResetColorButton.IsVisible = _hexColor != "#CC1E1E28";
     }
 
     private string _hexColor = "#CC1E1E28";
+
+    private static Color ApplyOpacity(Color color, double opacity) =>
+        new((byte)Math.Clamp(color.A * opacity, 0, 255), color.R, color.G, color.B);
 
     private void OnOpacityChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
@@ -238,7 +231,8 @@ public partial class SettingsWindow : Window
 
     private void UpdateOpacityPreview(double opacity)
     {
-        PreviewBorder.Opacity = opacity;
+        var color = Color.Parse(_hexColor);
+        PreviewBorder.Background = new SolidColorBrush(ApplyOpacity(color, opacity));
         OpacityValueText.Text = opacity.ToString("0%");
     }
 
