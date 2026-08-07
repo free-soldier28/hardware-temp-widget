@@ -8,28 +8,13 @@ $ErrorActionPreference = 'Stop'
 $root = git rev-parse --show-toplevel
 if (-not $root) { exit 0 }
 
-$csproj = Join-Path $root 'src\HardwareTempWidget.App\HardwareTempWidget.App.csproj'
-if (-not (Test-Path -LiteralPath $csproj)) { exit 0 }
-
-$content = [System.IO.File]::ReadAllText($csproj)
-$match = [regex]::Match($content, '<Version>(\d+)\.(\d+)\.(\d+)</Version>')
-if (-not $match.Success) { exit 0 }
-
-$tag = "v$($match.Groups[1].Value).$($match.Groups[2].Value).$($match.Groups[3].Value)"
-
 # Determine the local commit being pushed from pre-push's stdin.
-# Format per line: "<local ref> <local sha> <remote ref> <remote sha>"
-$lines = @()
-while (-not [Console]::In.EndOfStream)
-{
-    $lines += [Console]::In.ReadLine()
-}
-
+# Line format: "<local ref> <local sha> <remote ref> <remote sha>"
 $targetSha = $null
-foreach ($line in $lines)
+while ($null -ne ($line = [Console]::ReadLine()))
 {
     $parts = $line -split '\s+'
-    if ($parts.Count -ge 2 -and $parts[0] -like 'refs/heads/*')
+    if ($parts.Count -ge 3 -and $parts[0] -like 'refs/heads/*')
     {
         $targetSha = $parts[1]
         break
@@ -38,16 +23,26 @@ foreach ($line in $lines)
 
 if (-not $targetSha -or $targetSha -match '^0+$') { exit 0 }
 
-# Skip if the tag already exists locally or on the remote.
-$tagExists = git rev-parse -q --verify "refs/tags/$tag" 2>$null
-if ($tagExists) { exit 0 }
+$csproj = Join-Path $root 'src\HardwareTempWidget.App\HardwareTempWidget.App.csproj'
+if (-not (Test-Path -LiteralPath $csproj)) { exit 0 }
 
-$remoteTags = git ls-remote --tags $RemoteName "refs/tags/$tag" 2>$null
-if ($remoteTags) { exit 0 }
+# Read the version from the commit being pushed, NOT the working tree, so the tag
+# always matches the code it points to.
+$content = git show "${targetSha}:src/HardwareTempWidget.App/HardwareTempWidget.App.csproj" 2>$null
+if (-not $content) { exit 0 }
+$match = $content | Select-String '<Version>(\d+)\.(\d+)\.(\d+)</Version>' | ForEach-Object { $_.Matches[0] }
+if (-not $match) { exit 0 }
+
+$version = "$($match.Groups[1].Value).$($match.Groups[2].Value).$($match.Groups[3].Value)"
+$tag = "v$version"
+
+# Skip if the tag already exists locally or on the remote.
+if (git rev-parse -q --verify "refs/tags/$tag" 2>$null) { exit 0 }
+if (git ls-remote --tags $RemoteName "refs/tags/$tag" 2>$null) { exit 0 }
 
 git tag $tag $targetSha
 if ($LASTEXITCODE -ne 0) { exit 0 }
 
 git push $RemoteName "refs/tags/$tag"
 Write-Host "Version tag $tag pushed to $RemoteName"
-exit 0
+exit $LASTEXITCODE
