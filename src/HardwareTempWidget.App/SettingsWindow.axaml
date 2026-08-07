@@ -32,6 +32,8 @@
             <TabItem x:Name="GeneralTab" Header="Общие">
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="14">
+                        <TextBlock x:Name="VersionText" FontWeight="Bold" Foreground="#888888" />
+
                         <StackPanel Spacing="4">
                             <TextBlock x:Name="LanguageLabel" />
                             <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Stretch">
