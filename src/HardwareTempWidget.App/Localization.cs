@@ -28,7 +28,7 @@ public static class Localization
         ["Settings.PanelValidation"] = (
             "Select at least one temperature to display on the panel.",
             "Выберите хотя бы одну температуру для отображения на панели."),
-        ["Settings.TrayMetric"] = ("Temperature shown on tray icon", "Температура на значке в трее"),
+        ["Settings.TrayMetric"] = ("Value shown on tray icon", "Значение на значке в трее"),
         ["Settings.OverheatEnable"] = ("Notify on overheating", "Уведомлять о перегреве"),
         ["Settings.OverheatThreshold"] = ("Overheat threshold (°C)", "Порог перегрева (°C)"),
         ["Common.Cancel"] = ("Cancel", "Отмена"),
